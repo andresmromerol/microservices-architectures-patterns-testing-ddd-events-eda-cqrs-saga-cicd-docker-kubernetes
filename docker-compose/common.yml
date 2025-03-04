@@ -1,0 +1,22 @@
+services:
+  common:
+    networks:
+      - ${NETWORK_GLOBAL}
+
+
+  common-apps:
+    extends:
+      service: common
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    environment:
+      JAVA_TOOL_OPTIONS: -javaagent:/app/libs/${ENV_OPENTELEMETRY_FILE_NAME}
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:${TEMPO_DOCKER_PORTS}
+      OTEL_METRICS_EXPORTER: none
+
+
+  common-infra:
+    extends:
+      service: common

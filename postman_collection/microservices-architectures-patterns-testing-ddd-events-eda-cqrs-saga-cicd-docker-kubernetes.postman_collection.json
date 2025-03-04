@@ -1,0 +1,36 @@
+{
+	"info": {
+		"_postman_id": "7e3a8c00-b8c9-43a9-b9dd-4ed9976e1468",
+		"name": "microservices-architectures-patterns-testing-ddd-events-eda-cqrs-saga-cicd-docker-kubernetes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27168605",
+		"_collection_link": "https://cloudy-shadow-453512.postman.co/workspace/SPRING~8a754c86-bbd7-467e-930f-479277674e36/collection/27168605-7e3a8c00-b8c9-43a9-b9dd-4ed9976e1468?action=share&source=collection_link&creator=27168605"
+	},
+	"item": [
+		{
+			"name": "user-context",
+			"item": [
+				{
+					"name": "usr_boundled_context",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gateway-base-url}}/{{user-context-name}}/{{api-reference}}/{{api-version}}/health-check",
+							"host": [
+								"{{gateway-base-url}}"
+							],
+							"path": [
+								"{{user-context-name}}",
+								"{{api-reference}}",
+								"{{api-version}}",
+								"health-check"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
