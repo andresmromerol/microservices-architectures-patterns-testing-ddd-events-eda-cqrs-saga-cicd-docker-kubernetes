@@ -321,12 +321,15 @@ services:
         condition: service_healthy
       discovery-server:
         condition: service_healthy
+      shopdb:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: ${AUTH_SERVICE_JAVA_APPLICATION_NAME}
       SPRING_PROFILES_ACTIVE: ${ENV_SPRING_PROFILES_ACTIVE_DEV}
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://${DISCOVERY_SERVER_APPLICATION_NAME}:${DISCOVERY_SERVER_PORTS}/eureka/
       SPRING_CONFIG_IMPORT: ${CONFIGURATION_SERVER_APPLICATION_NAME}:http://${CONFIGURATION_SERVER_DOCKER_CONTAINER_NAME}:${CONFIGURATION_SERVER_PORTS}/
       OTEL_SERVICE_NAME: ${AUTH_SERVICE_JAVA_APPLICATION_NAME}
+      SPRING_DATASOURCE_URL: jdbc:mysql://shopdb:3306/shopdb
     healthcheck:
       test: "curl --fail --silent localhost:${AUTH_SERVICE_JAVA_PORTS}/actuator/health/readiness | grep UP || exit 1"
       interval: ${HEALTHCHECK_INTERVAL}
@@ -346,8 +349,6 @@ services:
       - ${GATEWAY_PORTS}:${GATEWAY_PORTS}
     depends_on:
       user-context:
-        condition: service_healthy
-      auth-service-java:
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: ${GATEWAY_APPLICATION_NAME}

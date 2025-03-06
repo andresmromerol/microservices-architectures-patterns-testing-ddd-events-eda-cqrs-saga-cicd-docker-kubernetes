@@ -1,0 +1,13 @@
+package com.amr.shop.athj.auth_service_java.user.domain;
+
+import com.amr.shop.cmmj.common_java_context.shared.exception.DomainException;
+
+public class UserDomainException extends DomainException {
+    public UserDomainException(String message) {
+        super(message);
+    }
+
+    public UserDomainException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}

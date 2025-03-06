@@ -16,7 +16,6 @@ public class AuthStatusHealthCheckController {
     @GetMapping
     public ResponseEntity<HashMap<String, String>> healthCheck() {
 
-        log.debug("auth-context - status ok");
         HashMap<String, String> status = new HashMap<>();
         status.put("bounded_context", "auth-service-java");
         status.put("status", "ok");

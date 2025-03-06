@@ -14,17 +14,12 @@ COMMON_JAVA_CONTEXT := common-java-context
 .PHONY: f
 
 f: format
-db: docker-build
-is: infrastructure-start
+d: docker-build
+i: infrastructure-start
 c: clean
-i: install
+ins: install
 
-run: c f i
-
-f: format
-c: clean
-
-run: c f
+run: c f ins
 
 clean:
 	cd $(CONFIGURATION_SERVER) && mvn clean
@@ -33,7 +28,6 @@ clean:
 	cd $(USER_CONTEXT) && mvn clean
 	cd $(AUTH_SERVICE_JAVA) && mvn clean
 	cd $(COMMON_JAVA_CONTEXT) && mvn clean
-
 
 format:
 	cd $(CONFIGURATION_SERVER) && mvn spotless:apply

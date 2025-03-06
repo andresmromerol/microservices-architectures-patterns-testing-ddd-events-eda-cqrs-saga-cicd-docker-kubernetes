@@ -1,0 +1,4 @@
+package com.amr.shop.cmmj.common_java_context.shared.enums;
+
+public enum ApplicationValidationEnum {
+}

@@ -60,10 +60,11 @@
 				<version>${reflections.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.amr.shop.jvcmn</groupId>
+				<groupId>com.amr.shop.cmmj</groupId>
 				<artifactId>common-java-context</artifactId>
 				<version>${common-java-context.version}</version>
 			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -123,8 +124,31 @@
 			<artifactId>reflections</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.amr.shop.jvcmn</groupId>
+			<groupId>com.amr.shop.cmmj</groupId>
 			<artifactId>common-java-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>8.0.2.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>jakarta.el</artifactId>
+			<version>4.0.0</version>
 		</dependency>
 	</dependencies>
 

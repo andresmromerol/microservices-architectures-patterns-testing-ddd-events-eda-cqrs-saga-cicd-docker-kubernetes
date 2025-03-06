@@ -31,6 +31,62 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "auth-service-java",
+			"item": [
+				{
+					"name": "athj_boundled_context",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gateway-base-url}}/{{auth-context-name}}/{{api-reference}}/{{api-version}}/health-check",
+							"host": [
+								"{{gateway-base-url}}"
+							],
+							"path": [
+								"{{auth-context-name}}",
+								"{{api-reference}}",
+								"{{api-version}}",
+								"health-check"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "athj_user_register",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"andres\",\r\n    \"email\": \"andresX@gmail.com\",\r\n    \"password\": \"123456789\",\r\n    \"phone\": \"3209118911\",\r\n    \"role\": [\r\n        \"5c2ced8b-28f9-4476-aa83-4f418088ea8d\",\r\n        \"0f3fa24f-0f9b-4ae1-a79a-387be78a3ceb\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-base-url}}/{{auth-context-name}}/{{api-reference}}/{{api-version}}/user/register/13d89e3d-f2fe-4877-86fc-13d44599d95a",
+							"host": [
+								"{{gateway-base-url}}"
+							],
+							"path": [
+								"{{auth-context-name}}",
+								"{{api-reference}}",
+								"{{api-version}}",
+								"user",
+								"register",
+								"13d89e3d-f2fe-4877-86fc-13d44599d95a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

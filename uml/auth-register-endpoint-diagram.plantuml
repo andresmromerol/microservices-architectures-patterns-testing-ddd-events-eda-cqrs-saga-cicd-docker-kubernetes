@@ -1,0 +1,427 @@
+@startuml Auth Register Endpoint
+
+title Auth Register Endpoint Diagram
+
+skinparam backgroundColor white
+skinparam style strictuml
+skinparam componentStyle uml2
+
+skinparam package {
+    BackgroundColor<<Domain>> LightYellow
+    BackgroundColor<<Application>> LightSalmon
+    BackgroundColor<<Infrastructure>> LightGreen
+    BackgroundColor<<Command>> Pink
+    BackgroundColor<<Query>> LightBlue
+    BackgroundColor<<Adapter>> LightGray
+    BackgroundColor<<User>> #E0FFFF
+    BackgroundColor<<UserView>> #FFE0FF
+    BackgroundColor<<Shared>> #F0F0F0
+}
+
+package "User" <<User>> {
+    package "Domain" <<Domain>> {
+        package "Model" <<Domain>> {
+            class UserModel {
+                - id: UserId
+                - name: NameVo
+                - email: EmailVo
+                - password: PasswordVo
+                - status: UserStatus
+                - phone: PhoneVo
+                - roles: Set<RoleEnum>
+                + create(id: UserId, name: NameVo, email: EmailVo, password: PasswordVo, phone: PhoneVo)
+                + validateState()
+            }
+        }
+
+        package "ValueObjects" <<Domain>> {
+            class UserId {
+                - value: UUID
+                + create(value: UUID)
+                + validate()
+            }
+            
+            class NameVo {
+                - value: String
+                + create(value: String)
+                + validate()
+            }
+            
+            class EmailVo {
+                - value: String
+                + create(value: String)
+                + validate()
+            }
+            
+            class PasswordVo {
+                - value: String
+                + create(value: String)
+                + validate()
+            }
+            
+            class PhoneVo {
+                - value: String
+                + create(value: String)
+                + validate()
+            }
+            
+            class UserStatus {
+                - value: UserStatusEnum
+                + create(value: UserStatusEnum)
+            }
+        }
+
+        package "Ports" <<Domain>> {
+            interface IUserAuthPersistencePort {
+                + save(user: UserModel)
+                + findByEmail(email: EmailVo): Optional<UserModel>
+            }
+            
+            interface IPasswordPort {
+                + encrypt(password: String): String
+                + matches(rawPassword: String, encodedPassword: String): boolean
+            }
+        }
+
+        package "Exceptions" <<Domain>> {
+            class UserAuthEmailAlreadyExistsException {
+                + email: String
+                + message: String
+            }
+            
+            class UserAuthDomainException {
+                + message: String
+            }
+        }
+    }
+
+    package "Application" <<Application>> {
+        package "Commands" <<Command>> {
+            package "UserRegister" <<Command>> {
+                class UserAuthRegisterCmd {
+                    + id: UUID
+                    + name: String
+                    + email: String
+                    + password: String
+                    + phone: String
+                    + roles: Set<RoleEnum>
+                }
+
+                class UserAuthRegister {
+                    - userAuthPersistencePort: IUserAuthPersistencePort
+                    - queryBus: IQueryBus
+                    + handle(command: UserAuthRegisterCmd)
+                }
+                
+                class UserAuthRegisterHdr {
+                    + handle(command: UserAuthRegisterCmd)
+                }
+            }
+        }
+
+        package "Password" <<Query>> {
+            class EncryptPasswordQry {
+                + password: String
+            }
+
+            class EncryptPasswordRes {
+                + encryptedPassword: String
+            }
+
+            class EncryptPassword {
+                - passwordPort: IPasswordPort
+                + handle(query: EncryptPasswordQry): EncryptPasswordRes
+            }
+            
+            class EncryptPasswordHdr {
+                + handle(query: EncryptPasswordQry)
+            }
+        }
+    }
+
+    package "Infrastructure" <<Infrastructure>> {
+        package "REST" <<Infrastructure>> {
+            class UserRegisterAuthRestController {
+                - commandBus: ICommandBus
+                + register(request: UserAuthRegisterRequest)
+            }
+
+            class UserAuthRegisterRequest {
+                + name: String
+                + email: String
+                + password: String
+                + phone: String
+                + roleUuids: Set<UUID>
+                + validate()
+                + toCommand(): UserAuthRegisterCmd
+            }
+        }
+
+        package "Persistence" <<Adapter>> {
+            class UserAuthPersistenceAdapter {
+                - repository: UserJpaRepository
+                - mapper: UserPersistenceMapper
+                + save(user: UserModel)
+                + findByEmail(email: EmailVo)
+            }
+            
+            class UserPersistenceMapper {
+                + toEntity(model: UserModel): UserJpa
+                + toDomain(entity: UserJpa): UserModel
+            }
+        }
+        
+        package "Security" <<Adapter>> {
+            class PasswordSecurityAdapter {
+                - passwordEncoder: PasswordEncoder
+                + encrypt(password: String): String
+                + matches(raw: String, encoded: String): boolean
+            }
+        }
+    }
+}
+
+package "UserView" <<UserView>> {
+    package "Domain" <<Domain>> {
+        package "Model" <<Domain>> {
+            class UserView {
+                - id: UUID
+                - name: String
+                - email: String
+                - password: String
+                - phone: String
+                - roles: Set<RoleEnum>
+                - permissions: Set<PermissionEnum>
+            }
+        }
+
+        package "Ports" <<Domain>> {
+            interface IUserViewPersistencePort {
+                + findByEmail(email: String): Optional<UserView>
+            }
+        }
+        
+        package "Exceptions" <<Domain>> {
+            class UserViewAuthDomainException {
+                + message: String
+            }
+        }
+    }
+
+    package "Application" <<Application>> {
+        package "Queries" <<Query>> {
+            package "UserSearch" <<Query>> {
+                class UserSearchByEmailQry {
+                    + email: String
+                }
+
+                class UserSearchByEmailRes {
+                    + id: UUID
+                    + name: String
+                    + email: String
+                    + password: String
+                    + phone: String
+                    + roles: Set<RoleEnum>
+                    + permissions: Set<PermissionEnum>
+                    + isEmpty: boolean
+                }
+
+                class UserSearchByEmail {
+                    - userViewPersistencePort: IUserViewPersistencePort
+                    + handle(query: UserSearchByEmailQry): UserSearchByEmailRes
+                }
+                
+                class UserSearchByEmailHdr {
+                    + handle(query: UserSearchByEmailQry)
+                }
+            }
+        }
+    }
+
+    package "Infrastructure" <<Infrastructure>> {
+        package "Persistence" <<Adapter>> {
+            class UserViewPersistenceAdapter {
+                - repository: UserViewJpaRepository
+                - mapper: UserViewPersistenceMapper
+                + findByEmail(email: String)
+            }
+            
+            class UserViewPersistenceMapper {
+                + toView(entity: UserViewJpa): UserView
+            }
+        }
+        
+        package "JPA" <<Infrastructure>> {
+            class UserViewJpa {
+                + id: UUID
+                + name: String
+                + email: String
+                + password: String
+                + phone: String
+                + roles: Set<RoleEnum>
+            }
+            
+            class UserViewJpaRepository {
+                + findByEmail(email: String)
+            }
+        }
+    }
+}
+
+package "Shared" <<Shared>> {
+    package "Domain" <<Domain>> {
+        abstract class AggregateRoot<T> {
+            # id: T
+            + getId(): T
+            # validateState()
+        }
+        
+        package "Enums" <<Domain>> {
+            enum UserStatusEnum {
+                + ACTIVE
+                + INACTIVE
+            }
+            
+            enum RoleEnum {
+                + ADMIN
+                + USER
+                + MANAGER
+            }
+
+            enum PermissionEnum {
+                + READ
+                + WRITE
+                + DELETE
+                + ADMIN
+            }
+        }
+    }
+
+    package "Application" <<Application>> {
+        package "Commands" <<Command>> {
+            interface ICommand {
+            }
+
+            interface ICommandBus {
+                + dispatch(command: ICommand)
+            }
+            
+            class CommandHandlersLocal {
+                - handlers: Map<Class, CommandHandler>
+                + register(commandClass: Class, handler: CommandHandler)
+            }
+            
+            class InMemoryCommandBus {
+                - handlers: CommandHandlersLocal
+                + dispatch(command: ICommand)
+            }
+        }
+
+        package "Queries" <<Query>> {
+            interface IQuery {
+            }
+
+            interface IQueryBus {
+                + ask(query: IQuery): Response
+            }
+            
+            class QueryHandlersLocal {
+                - handlers: Map<Class, QueryHandler>
+                + register(queryClass: Class, handler: QueryHandler)
+            }
+            
+            class InMemoryQueryBus {
+                - handlers: QueryHandlersLocal
+                + ask(query: IQuery): Response
+            }
+        }
+    }
+
+    package "Infrastructure" <<Infrastructure>> {
+        package "Exception" <<Infrastructure>> {
+            class AuthBusinessCode {
+                + code: String
+                + message: String
+            }
+            
+            class AuthExceptionHdr {
+                + handle(exception: Exception): ResponseEntity
+            }
+            
+            class ExceptionDTO {
+                + code: String
+                + message: String
+            }
+        }
+        
+        package "JPA" <<Infrastructure>> {
+            class TokenJpa {
+                + id: UUID
+                + token: String
+                + userId: UUID
+            }
+            
+            class TokenJpaRepository {
+                + save(token: TokenJpa)
+                + findByUserId(userId: UUID)
+            }
+            
+            class UserJpa {
+                + id: UUID
+                + name: String
+                + email: String
+                + password: String
+                + phone: String
+                + roles: Set<RoleEnum>
+            }
+            
+            class UserJpaRepository {
+                + save(user: UserJpa)
+                + findByEmail(email: String)
+            }
+        }
+    }
+}
+
+UserModel --|> AggregateRoot
+UserModel *-- UserId
+UserModel *-- NameVo
+UserModel *-- EmailVo
+UserModel *-- PasswordVo
+UserModel *-- PhoneVo
+UserModel *-- UserStatus
+UserModel *-- "0..*" RoleEnum
+
+UserView *-- "0..*" RoleEnum
+UserView *-- "0..*" PermissionEnum
+
+RoleEnum *-- "0..*" PermissionEnum
+
+UserAuthRegisterRequest ..> UserAuthRegisterCmd: creates
+UserRegisterAuthRestController ..> ICommandBus: uses
+UserAuthRegisterHdr ..> UserAuthRegister: delegates
+UserAuthRegister ..> IUserAuthPersistencePort: uses
+UserAuthRegister ..> IQueryBus: uses for password encryption
+
+UserSearchByEmailHdr ..> UserSearchByEmail: delegates
+UserSearchByEmail ..> UserSearchByEmailQry: handles
+UserSearchByEmail ..> UserSearchByEmailRes: produces
+UserSearchByEmail ..> IUserViewPersistencePort: uses
+
+EncryptPasswordHdr ..> EncryptPassword: delegates
+EncryptPassword ..> EncryptPasswordQry: handles
+EncryptPassword ..> EncryptPasswordRes: produces
+EncryptPassword ..> IPasswordPort: uses
+
+UserAuthPersistenceAdapter ..|> IUserAuthPersistencePort
+UserViewPersistenceAdapter ..|> IUserViewPersistencePort
+PasswordSecurityAdapter ..|> IPasswordPort
+
+UserAuthPersistenceAdapter ..> UserJpaRepository: uses
+UserViewPersistenceAdapter ..> UserViewJpaRepository: uses
+UserPersistenceMapper ..> UserJpa: creates
+UserViewPersistenceMapper ..> UserView: creates
+
+center footer andresmromerol/microservices-architectures-patterns-testing-ddd-events-eda-cqrs-saga-cicd-docker-kubernetes
+
+@enduml
