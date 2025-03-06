@@ -21,6 +21,9 @@ public class GatewayApplication {
                 .route(p -> p.path("/users/**")
                         .filters(f -> f.rewritePath("/users/(?<segment>.*)", "/${segment}"))
                         .uri("lb://USER-CONTEXT"))
+                .route(p -> p.path("/auth/**")
+                        .filters(f -> f.rewritePath("/auth/(?<segment>.*)", "/${segment}"))
+                        .uri("lb://AUTH-SERVICE-JAVA"))
                 .build();
     }
 }

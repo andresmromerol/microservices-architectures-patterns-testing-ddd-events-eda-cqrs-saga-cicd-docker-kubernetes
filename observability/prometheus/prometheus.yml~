@@ -3,10 +3,6 @@ global:
   evaluation_interval: 5s # Evaluate rules every 5 seconds.
 
 scrape_configs:
-  - job_name: 'auth-service-java'
-    metrics_path: '/actuator/prometheus'
-    static_configs:
-      - targets: [ 'auth-service-java:8002' ]
   - job_name: 'user-context'
     metrics_path: '/actuator/prometheus'
     static_configs:

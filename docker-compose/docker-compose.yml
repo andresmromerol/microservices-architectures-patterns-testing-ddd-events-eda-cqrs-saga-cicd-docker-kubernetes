@@ -295,6 +295,50 @@ services:
       service: common-apps
       file: common.yml
 
+  shopdb:
+    container_name: shopdb
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: shopdb
+    extends:
+      service: common-infra
+      file: common.yml
+
+  auth-service-java:
+    image: ${AUTH_SERVICE_JAVA_DOCKER_IMAGE}
+    ports:
+      - ${AUTH_SERVICE_JAVA_PORTS}:${AUTH_SERVICE_JAVA_PORTS}
+    depends_on:
+      configuration-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: ${AUTH_SERVICE_JAVA_APPLICATION_NAME}
+      SPRING_PROFILES_ACTIVE: ${ENV_SPRING_PROFILES_ACTIVE_DEV}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://${DISCOVERY_SERVER_APPLICATION_NAME}:${DISCOVERY_SERVER_PORTS}/eureka/
+      SPRING_CONFIG_IMPORT: ${CONFIGURATION_SERVER_APPLICATION_NAME}:http://${CONFIGURATION_SERVER_DOCKER_CONTAINER_NAME}:${CONFIGURATION_SERVER_PORTS}/
+      OTEL_SERVICE_NAME: ${AUTH_SERVICE_JAVA_APPLICATION_NAME}
+    healthcheck:
+      test: "curl --fail --silent localhost:${AUTH_SERVICE_JAVA_PORTS}/actuator/health/readiness | grep UP || exit 1"
+      interval: ${HEALTHCHECK_INTERVAL}
+      timeout: ${HEALTHCHECK_TIMEOUT}
+      retries: ${HEALTHCHECK_RETRIES}
+      start_period: ${HEALTHCHECK_START_PERIOD}
+    volumes:
+      - ../observability/opentelemetry/${ENV_OPENTELEMETRY_FILE_NAME}:/app/libs/${ENV_OPENTELEMETRY_FILE_NAME}
+    extends:
+      service: common-apps
+      file: common.yml
+
 
   api-gateway:
     image: ${GATEWAY_DOCKER_IMAGE}
@@ -302,6 +346,8 @@ services:
       - ${GATEWAY_PORTS}:${GATEWAY_PORTS}
     depends_on:
       user-context:
+        condition: service_healthy
+      auth-service-java:
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: ${GATEWAY_APPLICATION_NAME}
