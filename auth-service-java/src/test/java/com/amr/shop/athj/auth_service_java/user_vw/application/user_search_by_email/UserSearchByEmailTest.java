@@ -39,7 +39,6 @@ class UserSearchByEmailTest {
 
     @Test
     void shouldReturnUserWhenEmailExists() {
-        // Arrange
         Set<RoleEnum> roles = new HashSet<>();
         roles.add(RoleEnum.USER);
         Set<PermissionEnum> permissions = new HashSet<>();

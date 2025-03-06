@@ -2,6 +2,7 @@ package com.amr.shop.athj.auth_service_java.shared.infrastructure.exception;
 
 import static com.amr.shop.athj.auth_service_java.shared.infrastructure.exception.AuthBusinessCode.*;
 
+import com.amr.shop.athj.auth_service_java.user.domain.UserAuthAuthenticationFailedException;
 import com.amr.shop.athj.auth_service_java.user.domain.UserAuthEmailAlreadyExistsException;
 import com.amr.shop.athj.auth_service_java.user.domain.UserAuthException;
 import jakarta.validation.ConstraintViolation;
@@ -41,6 +42,13 @@ public class AuthExceptionHdr {
     public ExceptionDTO handleEmailAlreadyExistsException(UserAuthEmailAlreadyExistsException exception) {
         log.error("EmailAlreadyExistsException occurred: {}", exception.getMessage());
         return buildExceptionDTO(HttpStatus.CONFLICT, EMAIL_ALREADY_EXISTS, exception.getMessage());
+    }
+
+    @ExceptionHandler(UserAuthAuthenticationFailedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ExceptionDTO handlerUserAuthAuthenticationFailed(UserAuthAuthenticationFailedException exception) {
+        log.error("UserAuthAuthenticationFailedException occurred: {}", exception.getMessage());
+        return buildExceptionDTO(HttpStatus.UNAUTHORIZED, AUTH_UNAUTHORIZED, exception.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
