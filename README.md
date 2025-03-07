@@ -7,6 +7,15 @@
 
 # 🔷 Branches
 
+##  🌵 4-feat/add-user-authentication-endpoint
+
+<div align="center">
+
+### [View auth-authenticate-endpoint-diagram.plantuml](./uml/auth-authenticate-endpoint-diagram.plantuml)
+<img src="./diagrams/4-feat-add-user-authentication-endpoint-1.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<img src="./diagrams/4-feat-add-user-authentication-endpoint-2.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+</div>
+
 ##  🌵 3-feat/add-user-registration-auth
 
 <div align="center">

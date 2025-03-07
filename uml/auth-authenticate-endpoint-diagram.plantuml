@@ -1,0 +1,385 @@
+@startuml Auth Authenticate Endpoint Diagram
+
+title Auth Authenticate Endpoint Diagram
+
+skinparam backgroundColor white
+skinparam style strictuml
+skinparam componentStyle uml2
+
+skinparam package {
+    BackgroundColor<<Domain>> LightYellow
+    BackgroundColor<<Application>> LightSalmon
+    BackgroundColor<<Infrastructure>> LightGreen
+    BackgroundColor<<Command>> Pink
+    BackgroundColor<<Query>> LightBlue
+    BackgroundColor<<Adapter>> LightGray
+    BackgroundColor<<User>> #E0FFFF
+    BackgroundColor<<Token>> #FFE0FF
+    BackgroundColor<<UserView>> #F0F0F0
+    BackgroundColor<<Shared>> #F0F0F0
+}
+
+package "User" <<User>> {
+    package "User.Domain" <<Domain>> {
+        package "User.Model" <<Domain>> {
+            class UserModel {
+                - id: UserId
+                - email: EmailVo
+                - password: PasswordVo
+                - status: UserStatus
+                + authenticate(password: PasswordVo): boolean
+                + validateState()
+            }
+        }
+
+        package "User.ValueObjects" <<Domain>> {
+            class UserId {
+                - value: UUID
+                + create(value: UUID)
+                + validate()
+            }
+            
+            class EmailVo {
+                - value: String
+                + create(value: String)
+                + validate()
+            }
+            
+            class PasswordVo {
+                - value: String
+                + create(value: String)
+                + validate()
+            }
+            
+            class UserStatus {
+                - value: UserStatusEnum
+                + create(value: UserStatusEnum)
+            }
+        }
+
+        package "User.Ports" <<Domain>> {
+            interface IUserAuthPersistencePort {
+                + findByEmail(email: EmailVo): Optional<UserModel>
+            }
+            
+            interface IPasswordPort {
+                + matches(rawPassword: String, encodedPassword: String): boolean
+            }
+        }
+
+        package "User.Exceptions" <<Domain>> {
+            class UserAuthenticationFailedException {
+                + email: String
+                + message: String
+            }
+            
+            class UserAuthDomainException {
+                + message: String
+            }
+        }
+    }
+
+    package "User.Application" <<Application>> {
+        package "User.Commands" <<Command>> {
+            package "AuthenticationToken" <<Command>> {
+                class AuthenticationTokenCmd {
+                    + email: String
+                    + password: String
+                }
+
+                class AuthenticationToken {
+                    - userAuthPersistencePort: IUserAuthPersistencePort
+                    - passwordPort: IPasswordPort
+                    + handle(command: AuthenticationTokenCmd)
+                }
+                
+                class AuthenticationTokenHdr {
+                    + handle(command: AuthenticationTokenCmd)
+                }
+            }
+        }
+    }
+
+    package "User.Infrastructure" <<Infrastructure>> {
+        package "User.REST" <<Infrastructure>> {
+            class UserAuthenticateAuthRestController {
+                - commandBus: ICommandBus
+                - queryBus: IQueryBus
+                + authenticate(request: UserAuthenticateRequest): ResponseEntity<UserAuthResponse>
+            }
+
+            class UserAuthenticateRequest {
+                + email: String
+                + password: String
+                + validate()
+                + toCommand(): AuthenticationTokenCmd
+            }
+
+            class UserAuthResponse {
+                + accessToken: String
+                + refreshToken: String
+            }
+        }
+
+        package "User.Persistence" <<Adapter>> {
+            class UserAuthPersistenceAdapter {
+                - repository: UserJpaRepository
+                - mapper: UserPersistenceMapper
+                + findByEmail(email: EmailVo): Optional<UserModel>
+            }
+            
+            class UserPersistenceMapper {
+                + toEntity(model: UserModel): UserJpa
+                + toDomain(entity: UserJpa): UserModel
+            }
+        }
+        
+        package "User.Security" <<Adapter>> {
+            class PasswordSecurityAdapter {
+                - passwordEncoder: PasswordEncoder
+                + matches(raw: String, encoded: String): boolean
+            }
+        }
+    }
+}
+
+package "Token" <<Token>> {
+    package "Token.Domain" <<Domain>> {
+        package "Token.Model" <<Domain>> {
+            class TokenModel {
+                - id: UUID
+                - userId: UUID
+                - accessToken: String
+                - refreshToken: String
+                - expiresAt: LocalDateTime
+                + isValid(): boolean
+            }
+        }
+
+        package "Token.Ports" <<Domain>> {
+            interface ITokenPort {
+                + generateAccessToken(email: String): String
+                + generateRefreshToken(email: String): String
+                + revokeToken(tokenId: UUID): void
+                + saveToken(token: TokenModel): void
+            }
+        }
+    }
+
+    package "Token.Application" <<Application>> {
+        package "Token.Commands" <<Command>> {
+            package "TokenRevoke" <<Command>> {
+                class TokenRevokeCmd {
+                    + tokenId: UUID
+                }
+
+                class TokenRevoke {
+                    - tokenPort: ITokenPort
+                    + handle(command: TokenRevokeCmd)
+                }
+                
+                class TokenRevokeHdr {
+                    + handle(command: TokenRevokeCmd)
+                }
+            }
+
+            package "TokenSave" <<Command>> {
+                class TokenSaveCmd {
+                    + userId: UUID
+                    + accessToken: String
+                    + refreshToken: String
+                }
+
+                class TokenSave {
+                    - tokenPort: ITokenPort
+                    + handle(command: TokenSaveCmd)
+                }
+                
+                class TokenSaveHdr {
+                    + handle(command: TokenSaveCmd)
+                }
+            }
+        }
+
+        package "Token.Queries" <<Query>> {
+            package "TokenGenerate" <<Query>> {
+                class TokenGenerateQry {
+                    + email: String
+                }
+
+                class TokenGenerateRes {
+                    + accessToken: String
+                    + refreshToken: String
+                }
+
+                class TokenGenerate {
+                    - tokenPort: ITokenPort
+                    + handle(query: TokenGenerateQry): TokenGenerateRes
+                }
+                
+                class TokenGenerateHdr {
+                    + handle(query: TokenGenerateQry)
+                }
+            }
+
+            package "TokenRefresh" <<Query>> {
+                class TokenRefreshQry {
+                    + refreshToken: String
+                }
+
+                class TokenRefreshRes {
+                    + accessToken: String
+                    + refreshToken: String
+                }
+
+                class TokenRefresh {
+                    - tokenPort: ITokenPort
+                    + handle(query: TokenRefreshQry): TokenRefreshRes
+                }
+                
+                class TokenRefreshHdr {
+                    + handle(query: TokenRefreshQry)
+                }
+            }
+        }
+    }
+
+    package "Token.Infrastructure" <<Infrastructure>> {
+        package "Token.Security" <<Adapter>> {
+            class TokenSecurityAdapter {
+                - jwtService: JwtService
+                + generateAccessToken(email: String): String
+                + generateRefreshToken(email: String): String
+                + revokeToken(tokenId: UUID): void
+                + saveToken(token: TokenModel): void
+            }
+        }
+    }
+}
+
+package "UserView" <<UserView>> {
+    package "UserView.Domain" <<Domain>> {
+        package "UserView.Model" <<Domain>> {
+            class UserView {
+                - id: UUID
+                - email: String
+                - status: String
+            }
+        }
+
+        package "UserView.Ports" <<Domain>> {
+            interface IUserViewPersistencePort {
+                + findByEmail(email: String): Optional<UserView>
+            }
+        }
+    }
+
+    package "UserView.Application" <<Application>> {
+        package "UserSearchByEmail" <<Query>> {
+            class UserSearchByEmailQry {
+                + email: String
+            }
+
+            class UserSearchByEmailRes {
+                + user: UserView
+            }
+
+            class UserSearchByEmail {
+                - userViewPersistencePort: IUserViewPersistencePort
+                + handle(query: UserSearchByEmailQry): UserSearchByEmailRes
+            }
+            
+            class UserSearchByEmailHdr {
+                + handle(query: UserSearchByEmailQry)
+            }
+        }
+    }
+
+    package "UserView.Infrastructure" <<Infrastructure>> {
+        package "UserView.Persistence" <<Adapter>> {
+            class UserViewPersistenceAdapter {
+                - repository: UserViewJpaRepository
+                - mapper: UserViewPersistenceMapper
+                + findByEmail(email: String): Optional<UserView>
+            }
+        }
+    }
+}
+
+package "Shared" <<Shared>> {
+    package "Shared.Domain" <<Domain>> {
+        abstract class AggregateRoot<T> {
+            # id: T
+            + getId(): T
+        }
+
+        interface ICommand {
+        }
+
+        interface ICommandHandler<T extends ICommand> {
+            + handle(command: T)
+        }
+
+        interface IQuery<R> {
+        }
+
+        interface IQueryHandler<Q extends IQuery<R>, R> {
+            + handle(query: Q): R
+        }
+
+        interface ICommandBus {
+            + dispatch(command: ICommand)
+        }
+
+        interface IQueryBus {
+            + ask(query: IQuery): Response
+        }
+    }
+
+    package "Shared.Infrastructure" <<Infrastructure>> {
+        abstract class ApiController {
+            # commandBus: ICommandBus
+            # queryBus: IQueryBus
+            # dispatch(command: ICommand)
+            # ask(query: IQuery): Response
+        }
+    }
+}
+
+UserModel --|> AggregateRoot
+UserModel --> EmailVo
+UserModel --> PasswordVo
+UserModel --> UserStatus
+
+TokenModel --|> AggregateRoot
+
+AuthenticationTokenCmd ..|> ICommand
+AuthenticationTokenHdr ..|> ICommandHandler
+TokenRevokeCmd ..|> ICommand
+TokenRevokeHdr ..|> ICommandHandler
+TokenSaveCmd ..|> ICommand
+TokenSaveHdr ..|> ICommandHandler
+
+UserSearchByEmailQry ..|> IQuery
+UserSearchByEmailHdr ..|> IQueryHandler
+TokenGenerateQry ..|> IQuery
+TokenGenerateHdr ..|> IQueryHandler
+TokenRefreshQry ..|> IQuery
+TokenRefreshHdr ..|> IQueryHandler
+
+UserAuthenticateAuthRestController --|> ApiController
+UserAuthenticateAuthRestController ..> AuthenticationTokenCmd : creates
+UserAuthenticateAuthRestController ..> TokenGenerateQry : creates
+
+AuthenticationToken ..> IUserAuthPersistencePort : uses
+AuthenticationToken ..> IPasswordPort : uses
+TokenGenerate ..> ITokenPort : uses
+TokenRefresh ..> ITokenPort : uses
+TokenRevoke ..> ITokenPort : uses
+TokenSave ..> ITokenPort : uses
+
+UserAuthPersistenceAdapter ..|> IUserAuthPersistencePort
+PasswordSecurityAdapter ..|> IPasswordPort
+TokenSecurityAdapter ..|> ITokenPort
+
+@enduml
