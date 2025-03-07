@@ -7,6 +7,24 @@
 
 # 🔷 Branches
 
+
+##  🌵 5-feat/add-change-password-auth
+
+<div align="center">
+
+### [View auth-change-password-endpoint-diagram.plantuml](./uml/auth-change-password-endpoint-diagram.plantuml)
+<img src="./diagrams/5-feat-add-change-password-auth-1.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<img src="./diagrams/5-feat-add-change-password-auth-2.png" alt="Architecture Diagram" style="max-width: 400px; max-height: 500px; width: 100%; height: auto;">
+</div>
+
+<div align="left">
+⚡️Add commands: ChangePassword and UserUpdate.<br>
+⚡️Add IClaimPort.<br>
+⚡️Modify ports: IPasswordPort, IUserAuthPersistencePort.<br>
+⚡️Add exceptions: UserAuthNewPasswordConfirmationInvalidException, UserAuthPasswordConfirmationInvalidException.<br>
+⚡️Create endpoint: PUT athj_change_password.<br>
+</div>
+
 ##  🌵 4-feat/add-user-authentication-endpoint
 
 <div align="center">
