@@ -5,10 +5,7 @@ import static com.amr.shop.athj.auth_service_java.shared.infrastructure.exceptio
 import com.amr.shop.athj.auth_service_java.token.domain.TokenRevocationFailedException;
 import com.amr.shop.athj.auth_service_java.token.domain.TokenSaveFailedException;
 import com.amr.shop.athj.auth_service_java.token.domain.ValidTokenNotFoundException;
-import com.amr.shop.athj.auth_service_java.user.domain.UserAuthAuthenticationFailedException;
-import com.amr.shop.athj.auth_service_java.user.domain.UserAuthEmailAlreadyExistsException;
-import com.amr.shop.athj.auth_service_java.user.domain.UserAuthException;
-import com.amr.shop.athj.auth_service_java.user.domain.UserAuthUserNotFoundException;
+import com.amr.shop.athj.auth_service_java.user.domain.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.Collections;
@@ -82,6 +79,21 @@ public class AuthExceptionHdr {
     public ExceptionDTO handlerValidTokensNotFound(ValidTokenNotFoundException exception) {
         log.error("ValidTokensNotFoundException occurred: {}", exception.getMessage());
         return buildExceptionDTO(HttpStatus.UNAUTHORIZED, AUTH_TOKEN_NOT_FOUND, exception.getMessage());
+    }
+
+    @ExceptionHandler(UserAuthPasswordConfirmationInvalidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionDTO handlerValidTokensNotFound(UserAuthPasswordConfirmationInvalidException exception) {
+        log.error("UserAuthPasswordConfirmationInvalidException occurred: {}", exception.getMessage());
+        return buildExceptionDTO(HttpStatus.BAD_REQUEST, AUTH_PASSWORD_CONFIRMATION_INVALID, exception.getMessage());
+    }
+
+    @ExceptionHandler(UserAuthNewPasswordConfirmationInvalidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionDTO handlerValidTokensNotFound(UserAuthNewPasswordConfirmationInvalidException exception) {
+        log.error("UserAuthNewPasswordConfirmationInvalidException occurred: {}", exception.getMessage());
+        return buildExceptionDTO(
+                HttpStatus.BAD_REQUEST, AUTH_NEW_PASSWORD_CONFIRMATION_INVALID, exception.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -23,4 +23,12 @@ public class PasswordSecurityAdapter implements IPasswordPort {
         log.debug("Password encoded successfully");
         return encodedPassword;
     }
+
+    @Override
+    public boolean matches(String rawPassword, String encodedPassword) {
+        log.debug("Matching raw password against encoded password");
+        boolean matches = passwordEncoder.matches(rawPassword, encodedPassword);
+        log.debug("Password matching result: {}", matches);
+        return matches;
+    }
 }

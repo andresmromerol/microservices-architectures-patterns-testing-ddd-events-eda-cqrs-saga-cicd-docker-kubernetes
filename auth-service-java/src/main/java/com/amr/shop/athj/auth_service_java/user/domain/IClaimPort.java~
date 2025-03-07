@@ -1,0 +1,14 @@
+package com.amr.shop.athj.auth_service_java.user.domain;
+
+import java.util.Date;
+import java.util.List;
+
+public interface IClaimPort {
+    String extractUsername(String token);
+
+    List<String> extractRoles(String token);
+
+    List<String> extractPermissions(String token);
+
+    Date extractExpiration(String token);
+}

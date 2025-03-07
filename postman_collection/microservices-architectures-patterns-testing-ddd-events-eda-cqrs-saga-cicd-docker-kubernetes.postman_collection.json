@@ -93,7 +93,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"andres@gmail.com\",\r\n    \"password\": \"123456789\"\r\n}",
+							"raw": "{\r\n    \"email\": \"andres@gmail.com\",\r\n    \"password\": \"abcd123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -111,6 +111,46 @@
 								"{{api-version}}",
 								"user",
 								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "athj_change_password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyZXNvdXJjZV9hY2Nlc3MiOnsicm9sZXMiOlsiNWMyY2VkOGItMjhmOS00NDc2LWFhODMtNGY0MTgwODhlYThkIiwiMGYzZmEyNGYtMGY5Yi00YWUxLWE3OWEtMzg3YmU3OGEzY2ViIl19LCJuYW1lIjoiYW5kcmVzIiwiaWQiOiIxM2Q4OWUzZC1mMmZlLTQ4NzctODZmYy0xM2Q0NDU5OWQ5NWEiLCJzdWIiOiJhbmRyZXNAZ21haWwuY29tIiwiaWF0IjoxNzQxMzMwNjUzLCJleHAiOjE3NDEzMzQyNTN9.v_iTRovDjlPUoFYzxROIXFnsah8B5TV82DsG_USbk8E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPassword\": \"123456789\",\r\n    \"newPassword\": \"abcd123456\",\r\n    \"confirmationPassword\": \"abcd123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-base-url}}/{{auth-context-name}}/{{api-reference}}/{{api-version}}/user/change-password",
+							"host": [
+								"{{gateway-base-url}}"
+							],
+							"path": [
+								"{{auth-context-name}}",
+								"{{api-reference}}",
+								"{{api-version}}",
+								"user",
+								"change-password"
 							]
 						}
 					},

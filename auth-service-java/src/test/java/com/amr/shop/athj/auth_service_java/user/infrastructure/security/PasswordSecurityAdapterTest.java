@@ -1,8 +1,6 @@
 package com.amr.shop.athj.auth_service_java.user.infrastructure.security;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,5 +50,20 @@ class PasswordSecurityAdapterTest {
         assertNotNull(secondHash);
         assertNotEquals(firstHash, secondHash);
         verify(passwordEncoder, times(2)).encode(PASSWORD);
+    }
+
+    @Test
+    void shouldMatchValidPassword() {
+        when(passwordEncoder.matches(PASSWORD, ENCODED_PASSWORD)).thenReturn(true);
+        assertTrue(passwordSecurityAdapter.matches(PASSWORD, ENCODED_PASSWORD));
+        verify(passwordEncoder).matches(PASSWORD, ENCODED_PASSWORD);
+    }
+
+    @Test
+    void shouldNotMatchInvalidPassword() {
+        String wrongPassword = "wrong";
+        when(passwordEncoder.matches(wrongPassword, ENCODED_PASSWORD)).thenReturn(false);
+        assertFalse(passwordSecurityAdapter.matches(wrongPassword, ENCODED_PASSWORD));
+        verify(passwordEncoder).matches(wrongPassword, ENCODED_PASSWORD);
     }
 }
