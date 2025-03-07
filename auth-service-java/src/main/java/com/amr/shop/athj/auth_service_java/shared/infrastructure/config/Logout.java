@@ -24,8 +24,7 @@ public class Logout implements LogoutHandler {
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         String authHeader = request.getHeader(AuthTitleEnum.AUTHORIZATION_HEADER.getValue());
         String jwt = AuthUtil.extractBearerToken(authHeader);
-        TokenJpa storedToken = tokenRepository.findByToken(jwt)
-                .orElse(null);
+        TokenJpa storedToken = tokenRepository.findByToken(jwt).orElse(null);
         if (storedToken != null) {
             storedToken.setExpired(true);
             storedToken.setRevoked(true);

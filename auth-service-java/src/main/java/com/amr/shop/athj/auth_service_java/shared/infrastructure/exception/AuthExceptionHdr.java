@@ -6,6 +6,7 @@ import com.amr.shop.athj.auth_service_java.token.domain.TokenRevocationFailedExc
 import com.amr.shop.athj.auth_service_java.token.domain.TokenSaveFailedException;
 import com.amr.shop.athj.auth_service_java.token.domain.ValidTokenNotFoundException;
 import com.amr.shop.athj.auth_service_java.user.domain.*;
+import com.amr.shop.cmmj.common_java_context.shared.exception.DomainException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.Collections;
@@ -94,6 +95,20 @@ public class AuthExceptionHdr {
         log.error("UserAuthNewPasswordConfirmationInvalidException occurred: {}", exception.getMessage());
         return buildExceptionDTO(
                 HttpStatus.BAD_REQUEST, AUTH_NEW_PASSWORD_CONFIRMATION_INVALID, exception.getMessage());
+    }
+
+    @ExceptionHandler(UserAuthTokenExpiredException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ExceptionDTO handlerValidTokensNotFound(UserAuthTokenExpiredException exception) {
+        log.error("UserAuthTokenExpiredException occurred: {}", exception.getMessage());
+        return buildExceptionDTO(HttpStatus.UNAUTHORIZED, AUTH_TOKEN_EXPIRED, exception.getMessage());
+    }
+
+    @ExceptionHandler(DomainException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionDTO handleDomainException(DomainException exception) {
+        log.error("DomainException occurred: {}", exception.getMessage());
+        return buildExceptionDTO(HttpStatus.BAD_REQUEST, VALIDATION_ERROR, exception.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -117,6 +117,46 @@
 					"response": []
 				},
 				{
+					"name": "athj_refresh_token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbmRyZXNAZ21haWwuY29tIiwiaWF0IjoxNzQxMzY5ODIwLCJleHAiOjE3NDE5NzQ2MjB9.yTZ2gexAwhBOZd-TPwRCvAtwAQC576eDj__g9m1_3BM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"andres@gmail.com\",\r\n    \"password\": \"123456789\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-base-url}}/{{auth-context-name}}/{{api-reference}}/{{api-version}}/tokens/refresh-token",
+							"host": [
+								"{{gateway-base-url}}"
+							],
+							"path": [
+								"{{auth-context-name}}",
+								"{{api-reference}}",
+								"{{api-version}}",
+								"tokens",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "athj_logout",
 					"request": {
 						"auth": {
@@ -124,7 +164,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyZXNvdXJjZV9hY2Nlc3MiOnsicm9sZXMiOlsiNWMyY2VkOGItMjhmOS00NDc2LWFhODMtNGY0MTgwODhlYThkIiwiMGYzZmEyNGYtMGY5Yi00YWUxLWE3OWEtMzg3YmU3OGEzY2ViIl19LCJuYW1lIjoiYW5kcmVzIiwiaWQiOiIxM2Q4OWUzZC1mMmZlLTQ4NzctODZmYy0xM2Q0NDU5OWQ5NWEiLCJzdWIiOiJhbmRyZXNAZ21haWwuY29tIiwiaWF0IjoxNzQxMzYxMDUzLCJleHAiOjE3NDEzNjQ2NTN9.7eLl8KbmSBaSwA_ct6mDqYDIL3tBJzEKmP7GBKh5qPw",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyZXNvdXJjZV9hY2Nlc3MiOnsicm9sZXMiOlsiNWMyY2VkOGItMjhmOS00NDc2LWFhODMtNGY0MTgwODhlYThkIiwiMGYzZmEyNGYtMGY5Yi00YWUxLWE3OWEtMzg3YmU3OGEzY2ViIl19LCJuYW1lIjoiYW5kcmVzIiwiaWQiOiIxM2Q4OWUzZC1mMmZlLTQ4NzctODZmYy0xM2Q0NDU5OWQ5NWEiLCJzdWIiOiJhbmRyZXNAZ21haWwuY29tIiwiaWF0IjoxNzQxMzY3MzU3LCJleHAiOjE3NDEzNzA5NTd9.QA8MBQ6KDr-X0Oj8kxnVVrG2ygS9ek5KFeHR9H5q-pw",
 									"type": "string"
 								}
 							]

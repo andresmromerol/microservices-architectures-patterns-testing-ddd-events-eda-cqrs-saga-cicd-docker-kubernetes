@@ -11,6 +11,7 @@ public final class AuthBusinessCode {
     public static final String AUTH_TOKEN_SAVE_FAILED = "AUTH_70";
     public static final String AUTH_PASSWORD_CONFIRMATION_INVALID = "AUTH_80";
     public static final String AUTH_NEW_PASSWORD_CONFIRMATION_INVALID = "AUTH_90";
+    public static final String AUTH_TOKEN_EXPIRED = "AUTH_100";
 
     private AuthBusinessCode() {}
 }
