@@ -1,0 +1,115 @@
+@startuml Auth Logout Diagram
+
+title Auth Logout Diagram
+
+skinparam backgroundColor white
+skinparam style strictuml
+skinparam componentStyle uml2
+
+skinparam package {
+    BackgroundColor<<Domain>> LightYellow
+    BackgroundColor<<Application>> LightSalmon
+    BackgroundColor<<Infrastructure>> LightGreen
+    BackgroundColor<<Command>> Pink
+    BackgroundColor<<Query>> LightBlue
+    BackgroundColor<<Adapter>> LightGray
+    BackgroundColor<<User>> #E0FFFF
+    BackgroundColor<<UserRW>> #FFE0FF
+    BackgroundColor<<Shared>> #F0F0F0
+}
+
+package "Shared" <<Shared>> {
+    
+    interface ITokenRepository {
+        + findByToken(token: String): Optional<String>
+        + save(userId: UUID, token: String): void
+        + invalidateToken(token: String): void
+    }
+    
+    package "Infrastructure" <<Infrastructure>> {
+        package "Config" <<Infrastructure>> {
+            class Logout {
+                - tokenRepository: ITokenRepository
+                + logout(request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication)
+            }
+            
+            class SecurityConfiguration {
+                - userDetailsService: UserDetailsService
+                - jwtAuthenticationFilter: JwtAuthenticationFilter
+                - logout: Logout
+                + securityFilterChain(http: HttpSecurity): SecurityFilterChain
+                + authenticationProvider(): AuthenticationProvider
+                + authenticationManager(config: AuthenticationConfiguration): AuthenticationManager
+                + passwordEncoder(): PasswordEncoder
+            }
+            
+            interface LogoutHandler {
+                + logout(request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication)
+            }
+        }
+        
+        interface TokenJpaRepository {
+            + findByToken(token: String): Optional<String>
+            + save(userId: UUID, token: String): void
+            + updateTokenStatus(token: String, expired: boolean, revoked: boolean): void
+        }
+        
+        class TokenPersistenceAdapter {
+            - tokenJpaRepository: TokenJpaRepository
+            + findByToken(token: String): Optional<String>
+            + save(userId: UUID, token: String): void
+            + invalidateToken(token: String): void
+        }
+        
+        package "Security" <<Adapter>> {
+            class JwtAuthenticationFilter {
+                - jwtService: JwtService
+                - userDetailsService: UserDetailsService
+                - tokenRepository: ITokenRepository
+                + doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain)
+            }
+            
+            class JwtService {
+                - secretKey: String
+                - tokenValidityInMs: long
+                + extractUsername(token: String): String
+                + generateToken(userDetails: UserDetails): String
+                + isTokenValid(token: String, userDetails: UserDetails): boolean
+            }
+        }
+        
+        package "Util" <<Infrastructure>> {
+            class AuthUtil {
+                + {static} extractBearerToken(authHeader: String): String
+            }
+            
+            enum AuthTitleEnum {
+                AUTHORIZATION_HEADER
+                BEARER_PREFIX
+                + getValue(): String
+            }
+        }
+    }
+}
+
+Logout --|> LogoutHandler
+Logout --> ITokenRepository: uses
+Logout ..> SecurityContextHolder: uses
+Logout ..> AuthUtil: uses
+Logout ..> AuthTitleEnum: uses
+
+SecurityConfiguration --> Logout: configures
+SecurityConfiguration --> JwtAuthenticationFilter: configures
+SecurityConfiguration ..> AuthenticationProvider: creates
+SecurityConfiguration ..> AuthenticationManager: creates
+SecurityConfiguration ..> PasswordEncoder: creates
+
+JwtAuthenticationFilter --> JwtService: uses
+JwtAuthenticationFilter --> ITokenRepository: uses
+
+TokenPersistenceAdapter --|> ITokenRepository
+TokenPersistenceAdapter --> TokenJpaRepository: uses
+
+center footer andresmromerol/microservices-architectures-patterns-testing-ddd-events-eda-cqrs-saga-cicd-docker-kubernetes
+
+@enduml

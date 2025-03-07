@@ -8,6 +8,23 @@
 # 🔷 Branches
 
 
+##  🌵 6-feat/add-logout-auth
+
+<div align="center">
+
+### [View auth-logout-diagram.plantuml](./uml/auth-logout-diagram.plantuml)
+<img src="./diagrams/6-feat-add-logout-auth-1.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<img src="./diagrams/6-feat-add-logout-auth-2.png" alt="Architecture Diagram" style="max-width: 400px; max-height: 500px; width: 100%; height: auto;">
+</div>
+
+<div align="left">
+⚡️Add commands: ChangePassword and UserUpdate.<br>
+⚡️Add IClaimPort.<br>
+⚡️Modify ports: IPasswordPort, IUserAuthPersistencePort.<br>
+⚡️Add exceptions: UserAuthNewPasswordConfirmationInvalidException, UserAuthPasswordConfirmationInvalidException.<br>
+⚡️Create endpoint: PUT athj_change_password.<br>
+</div>
+
 ##  🌵 5-feat/add-change-password-auth
 
 <div align="center">
