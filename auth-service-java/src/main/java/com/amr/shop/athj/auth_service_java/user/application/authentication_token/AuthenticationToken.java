@@ -21,7 +21,7 @@ public class AuthenticationToken {
             log.info("Successfully authenticated user with email: {}", email);
         } catch (Exception ex) {
             log.error("Failed to authenticate user with email: {}", email, ex);
-            throw new UserAuthAuthenticationFailedException("Failed to authenticate with email: " + email);
+            throw new UserAuthAuthenticationFailedException(email);
         }
     }
 }

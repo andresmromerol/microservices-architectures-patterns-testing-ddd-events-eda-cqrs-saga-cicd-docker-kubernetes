@@ -1,9 +1,6 @@
 package com.amr.shop.cmmj.common_java_context.services.auth;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public enum RoleEnum {
@@ -45,6 +42,17 @@ public enum RoleEnum {
                         .findFirst()
                         .orElseThrow(() -> new IllegalArgumentException("Role not found with UUID: " + uuid)))
                 .collect(Collectors.toSet());
+    }
+
+    public static RoleEnum fromName(String name) {
+        return Arrays.stream(RoleEnum.values())
+                .filter(role -> role.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Role not found: " + name));
+    }
+
+    public static List<String> getRoleValues(Collection<RoleEnum> roles) {
+        return roles.stream().map(RoleEnum::getValue).toList();
     }
 
     public UUID getId() {
