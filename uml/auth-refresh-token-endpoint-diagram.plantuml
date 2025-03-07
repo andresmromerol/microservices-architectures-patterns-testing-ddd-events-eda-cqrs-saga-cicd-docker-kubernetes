@@ -1,0 +1,218 @@
+@startuml Auth Refresh Token Endpoint Diagram
+
+title Auth Refresh Token Endpoint Diagram
+
+skinparam backgroundColor white
+skinparam style strictuml
+skinparam componentStyle uml2
+
+skinparam package {
+    BackgroundColor<<Domain>> LightYellow
+    BackgroundColor<<Application>> LightSalmon
+    BackgroundColor<<Infrastructure>> LightGreen
+    BackgroundColor<<Command>> Pink
+    BackgroundColor<<Query>> LightBlue
+    BackgroundColor<<Adapter>> LightGray
+    BackgroundColor<<User>> #E0FFFF
+    BackgroundColor<<UserView>> #FFE0FF
+    BackgroundColor<<Shared>> #F0F0F0
+    BackgroundColor<<Token>> #FFFACD
+}
+
+package "Token" <<Token>> {
+    package "Infrastructure" <<Infrastructure>> {
+        package "REST" <<Infrastructure>> {
+            class RefreshTokenAuthRestController {
+                - queryBus: IQueryBus
+                - commandBus: ICommandBus
+                - claimPort: IClaimPort
+                + refreshToken(request: HttpServletRequest): ResponseEntity<RefreshTokenResponse>
+            }
+
+            class RefreshTokenResponse {
+                + accessToken: String
+                + refreshToken: String
+            }
+        }
+    }
+
+    package "Application" <<Application>> {
+        package "TokenGenerate" <<Query>> {
+            class TokenGenerateQry {
+                + token: BuildTokenDto
+                + secretKey: String
+            }
+
+            class TokenGenerateRes {
+                + tokenGenerated: String
+            }
+        }
+
+        package "TokenRefresh" <<Query>> {
+            class TokenRefreshQry {
+                + token: BuildTokenDto
+                + secretKey: String
+            }
+
+            class TokenRefreshRes {
+                + refreshTokenGenerated: String
+            }
+        }
+
+        package "TokenRevoke" <<Command>> {
+            class TokenRevokeCmd {
+                + userId: UUID
+            }
+        }
+
+        package "TokenSave" <<Command>> {
+            class TokenSaveCmd {
+                + userId: UUID
+                + token: String
+            }
+        }
+    }
+}
+
+package "User" <<User>> {
+    package "Domain" <<Domain>> {
+        package "Ports" <<Domain>> {
+            interface IClaimPort {
+                + extractUsername(token: String): String
+                + extractExpiration(token: String): Date
+            }
+            
+            interface IAuthenticationPort {
+                + getSecretKey(): String
+                + getJwtExpiration(): long
+                + refreshExpiration(): long
+            }
+        }
+
+        package "Exceptions" <<Domain>> {
+            class UserAuthTokenExpiredException {
+                + message: String
+            }
+            
+            class UserAuthUserNotFoundException {
+                + email: String
+                + message: String
+            }
+        }
+    }
+
+    package "Application" <<Application>> {
+        package "ValidateToken" <<Command>> {
+            class ValidateTokenCmd {
+                + token: String
+            }
+
+            class ValidateToken {
+                - queryBus: IQueryBus
+                - claimPort: IClaimPort
+                + execute(token: String)
+                - getEmail(token: String): String
+                - getAuthenticatedUser(email: String): UserSearchByEmailRes
+                - ensureUsernameIsEquivalent(token: String, user: UserSearchByEmailRes)
+                - ensureTokenDoesNotExpire(token: String)
+            }
+        }
+
+        package "Authentication" <<Query>> {
+            class AuthenticatorQry {
+                + email: String
+            }
+
+            class AuthenticatorRes {
+                + accessToken: String
+                + refreshToken: String
+            }
+
+            class Authentication {
+                - queryBus: IQueryBus
+                - commandBus: ICommandBus
+                - authenticationPort: IAuthenticationPort
+                + execute(email: String): AuthenticatorRes
+                - getToken(user: UserSearchByEmailRes): BuildTokenDto
+                - getRefreshToken(user: UserSearchByEmailRes): BuildTokenDto
+                - getAuthenticatedUser(email: String): UserSearchByEmailRes
+            }
+        }
+    }
+}
+
+package "UserView" <<UserView>> {
+    package "Application" <<Application>> {
+        package "Queries" <<Query>> {
+            package "UserSearch" <<Query>> {
+                class UserSearchByEmailQry {
+                    + email: String
+                }
+
+                class UserSearchByEmailRes {
+                    + id: UUID
+                    + name: String
+                    + email: String
+                    + password: String
+                    + phone: String
+                    + roles: Set<RoleEnum>
+                    + permissions: Set<PermissionEnum>
+                    + isEmpty: boolean
+                }
+            }
+        }
+    }
+}
+
+package "Shared" <<Shared>> {
+    package "Application" <<Application>> {
+        package "Commands" <<Command>> {
+            interface ICommand {
+            }
+
+            interface ICommandBus {
+                + dispatch(command: ICommand)
+            }
+        }
+
+        package "Queries" <<Query>> {
+            interface IQuery {
+            }
+
+            interface IQueryBus {
+                + ask(query: IQuery): Response
+            }
+        }
+    }
+
+    package "Infrastructure" <<Infrastructure>> {
+        package "Exception" <<Infrastructure>> {
+            class AuthExceptionHdr {
+                + handle(exception: Exception): ResponseEntity
+            }
+        }
+    }
+}
+
+RefreshTokenAuthRestController ..> IQueryBus: uses
+RefreshTokenAuthRestController ..> ICommandBus: uses
+RefreshTokenAuthRestController ..> IClaimPort: uses
+RefreshTokenAuthRestController ..> ValidateTokenCmd: creates
+RefreshTokenAuthRestController ..> AuthenticatorQry: creates
+
+ValidateToken ..> IQueryBus: uses
+ValidateToken ..> IClaimPort: uses
+ValidateToken ..> UserSearchByEmailQry: creates
+
+Authentication ..> IQueryBus: uses
+Authentication ..> ICommandBus: uses
+Authentication ..> IAuthenticationPort: uses
+Authentication ..> UserSearchByEmailQry: creates
+Authentication ..> TokenGenerateQry: creates
+Authentication ..> TokenRefreshQry: creates
+Authentication ..> TokenRevokeCmd: creates
+Authentication ..> TokenSaveCmd: creates
+
+center footer andresmromerol/microservices-architectures-patterns-testing-ddd-events-eda-cqrs-saga-cicd-docker-kubernetes
+
+@enduml
