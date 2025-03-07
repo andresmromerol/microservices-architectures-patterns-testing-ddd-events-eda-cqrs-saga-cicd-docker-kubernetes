@@ -13,6 +13,16 @@
 				{
 					"name": "usr_boundled_context",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyZXNvdXJjZV9hY2Nlc3MiOnsicm9sZXMiOlsiNWMyY2VkOGItMjhmOS00NDc2LWFhODMtNGY0MTgwODhlYThkIl19LCJuYW1lIjoiYW5kcmVzIiwiaWQiOiIxM2Q4OWUzZC1mMmZlLTQ4NzctODZmYy0xM2Q0NDU5OWQ5NWEiLCJzdWIiOiJhbmRyZXNAZ21haWwuY29tIiwiaWF0IjoxNzQxMzkwMDIwLCJleHAiOjE3NDEzOTM2MjB9.Zq_41GJwFLSnzMwX_T1tB95rGs9DoL1GH6LWYOouonw\",",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -62,7 +72,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"andres\",\r\n    \"email\": \"andres@gmail.com\",\r\n    \"password\": \"123456789\",\r\n    \"phone\": \"3209118911\",\r\n    \"role\": [\r\n        \"5c2ced8b-28f9-4476-aa83-4f418088ea8d\",\r\n        \"0f3fa24f-0f9b-4ae1-a79a-387be78a3ceb\"\r\n    ]\r\n}",
+							"raw": "{\r\n    \"name\": \"andres\",\r\n    \"email\": \"andres@gmail.com\",\r\n    \"password\": \"123456789\",\r\n    \"phone\": \"3209118911\",\r\n    \"role\": [\r\n        \"5c2ced8b-28f9-4476-aa83-4f418088ea8d\"\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
