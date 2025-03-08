@@ -6,15 +6,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EncryptPasswordHdr implements IQueryHandler<EncryptPasswordQry, EncryptPasswordRes> {
-    private final EncryptPassword encryptPassword;
+  private final EncryptPassword encryptPassword;
 
-    @Autowired
-    public EncryptPasswordHdr(EncryptPassword encryptPassword) {
-        this.encryptPassword = encryptPassword;
-    }
+  @Autowired
+  public EncryptPasswordHdr(EncryptPassword encryptPassword) {
+    this.encryptPassword = encryptPassword;
+  }
 
-    @Override
-    public EncryptPasswordRes handle(EncryptPasswordQry query) {
-        return encryptPassword.execute(query.password());
-    }
+  @Override
+  public EncryptPasswordRes handle(EncryptPasswordQry query) {
+    return encryptPassword.execute(query.password());
+  }
 }

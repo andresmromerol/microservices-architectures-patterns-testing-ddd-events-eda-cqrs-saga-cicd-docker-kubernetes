@@ -11,32 +11,31 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class UserSearchByEmail {
-    private final IUserViewPersistencePort userViewPersistencePort;
+  private final IUserViewPersistencePort userViewPersistencePort;
 
-    @Autowired
-    public UserSearchByEmail(IUserViewPersistencePort userViewPersistencePort) {
-        this.userViewPersistencePort = userViewPersistencePort;
+  @Autowired
+  public UserSearchByEmail(IUserViewPersistencePort userViewPersistencePort) {
+    this.userViewPersistencePort = userViewPersistencePort;
+  }
+
+  public UserSearchByEmailRes execute(String email) {
+    log.info("Starting search user by email: {}", email);
+    Optional<UserView> userReview = userViewPersistencePort.search(new EmailVo(email));
+    if (userReview.isPresent()) {
+      UserView model = userReview.get();
+      log.info("User found: {}", model);
+      return UserSearchByEmailRes.builder()
+          .id(model.getId())
+          .name(model.getName())
+          .email(model.getEmail())
+          .password(model.getPassword())
+          .phone(model.getPhone())
+          .roles(model.getRoles())
+          .permissions(model.getPermissions())
+          .isEmpty(false)
+          .build();
     }
-
-    public UserSearchByEmailRes execute(String email) {
-        log.info("Starting search user by email: {}", email);
-        Optional<UserView> userReview = userViewPersistencePort.search(new EmailVo(email));
-
-        if (userReview.isPresent()) {
-            UserView model = userReview.get();
-            log.info("User found: {}", model);
-            return UserSearchByEmailRes.builder()
-                    .id(model.getId())
-                    .name(model.getName())
-                    .email(model.getEmail())
-                    .password(model.getPassword())
-                    .phone(model.getPhone())
-                    .roles(model.getRoles())
-                    .permissions(model.getPermissions())
-                    .isEmpty(false)
-                    .build();
-        }
-        log.info("User not found");
-        return UserSearchByEmailRes.builder().isEmpty(true).build();
-    }
+    log.info("User not found");
+    return UserSearchByEmailRes.builder().isEmpty(true).build();
+  }
 }

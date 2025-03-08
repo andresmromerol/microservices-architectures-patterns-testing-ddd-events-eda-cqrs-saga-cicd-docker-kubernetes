@@ -6,15 +6,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ValidateTokenHdr implements ICommandHandler<ValidateTokenCmd> {
-    private final ValidateToken validateToken;
+  private final ValidateToken validateToken;
 
-    @Autowired
-    public ValidateTokenHdr(ValidateToken validateToken) {
-        this.validateToken = validateToken;
-    }
+  @Autowired
+  public ValidateTokenHdr(ValidateToken validateToken) {
+    this.validateToken = validateToken;
+  }
 
-    @Override
-    public void handle(ValidateTokenCmd c) {
-        validateToken.execute(c.token());
-    }
+  @Override
+  public void handle(ValidateTokenCmd c) {
+    validateToken.execute(c.token());
+  }
 }

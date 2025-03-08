@@ -14,20 +14,24 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TokenSave {
 
-    private final ITokenPersistencePort tokenPersistencePort;
+  private final ITokenPersistencePort tokenPersistencePort;
 
-    @Autowired
-    public TokenSave(ITokenPersistencePort tokenPersistencePort) {
-        this.tokenPersistencePort = tokenPersistencePort;
-    }
+  @Autowired
+  public TokenSave(ITokenPersistencePort tokenPersistencePort) {
+    this.tokenPersistencePort = tokenPersistencePort;
+  }
 
-    public void execute(UUID userId, String token) {
-        log.info("Saving token for user: {}", userId);
-
-        TokenModel tokenModel = TokenModel.create(
-                new TokenId(UUID.randomUUID()), token, TokenType.BEARER, false, false, new UserId(userId));
-        tokenPersistencePort.save(tokenModel);
-
-        log.info("Token saved successfully for user: {}", userId);
-    }
+  public void execute(UUID userId, String token) {
+    log.info("Saving token for user: {}", userId);
+    TokenModel tokenModel =
+        TokenModel.create(
+            new TokenId(UUID.randomUUID()),
+            token,
+            TokenType.BEARER,
+            false,
+            false,
+            new UserId(userId));
+    tokenPersistencePort.save(tokenModel);
+    log.info("Token saved successfully for user: {}", userId);
+  }
 }

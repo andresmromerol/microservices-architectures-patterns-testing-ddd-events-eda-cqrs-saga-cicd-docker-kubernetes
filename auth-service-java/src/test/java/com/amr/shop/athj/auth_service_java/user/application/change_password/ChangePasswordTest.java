@@ -24,59 +24,54 @@ import org.mockito.MockitoAnnotations;
 
 class ChangePasswordTest {
 
-    @Mock
-    private IQueryBus queryBus;
+  @Mock private IQueryBus queryBus;
 
-    @Mock
-    private ICommandBus commandBus;
+  @Mock private ICommandBus commandBus;
 
-    @Mock
-    private IPasswordPort passwordPort;
+  @Mock private IPasswordPort passwordPort;
 
-    private ChangePassword changePassword;
+  private ChangePassword changePassword;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        changePassword = new ChangePassword(queryBus, commandBus, passwordPort);
-    }
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+    changePassword = new ChangePassword(queryBus, commandBus, passwordPort);
+  }
 
-    @Test
-    void shouldChangePassword() {
-        UUID userId = UUID.randomUUID();
-        String name = "andres";
-        String email = "andres@email.com";
-        String currentPassword = "currentPassword";
-        String encodedCurrentPassword = "encodedCurrentPassword";
-        String newPassword = "newPassword";
-        String confirmationPassword = "newPassword";
-        String encodedNewPassword = "encodedNewPassword";
-        String phone = "3209118911";
-        Set<RoleEnum> roles = new HashSet<>();
-        roles.add(RoleEnum.USER);
-        Set<PermissionEnum> permissions = new HashSet<>();
-        permissions.add(PermissionEnum.ADMIN_CREATE);
-
-        UserSearchByEmailRes userRes = UserSearchByEmailRes.builder()
-                .id(userId)
-                .name(name)
-                .email(email)
-                .password(encodedCurrentPassword)
-                .phone(phone)
-                .roles(roles)
-                .permissions(permissions)
-                .isEmpty(false)
-                .build();
-
-        when(queryBus.ask(any(UserSearchByEmailQry.class))).thenReturn(userRes);
-        when(passwordPort.matches(currentPassword, encodedCurrentPassword)).thenReturn(true);
-        when(queryBus.ask(any(EncryptPasswordQry.class))).thenReturn(new EncryptPasswordRes(encodedNewPassword));
-
-        changePassword.execute(email, currentPassword, newPassword, confirmationPassword);
-
-        verify(queryBus).ask(any(UserSearchByEmailQry.class));
-        verify(passwordPort).matches(currentPassword, encodedCurrentPassword);
-        verify(queryBus).ask(any(EncryptPasswordQry.class));
-        verify(commandBus).dispatch(any(UserUpdateCmd.class));
-    }
+  @Test
+  void shouldChangePassword() {
+    UUID userId = UUID.randomUUID();
+    String name = "andres";
+    String email = "andres@email.com";
+    String currentPassword = "currentPassword";
+    String encodedCurrentPassword = "encodedCurrentPassword";
+    String newPassword = "newPassword";
+    String confirmationPassword = "newPassword";
+    String encodedNewPassword = "encodedNewPassword";
+    String phone = "3209118911";
+    Set<RoleEnum> roles = new HashSet<>();
+    roles.add(RoleEnum.USER);
+    Set<PermissionEnum> permissions = new HashSet<>();
+    permissions.add(PermissionEnum.ADMIN_CREATE);
+    UserSearchByEmailRes userRes =
+        UserSearchByEmailRes.builder()
+            .id(userId)
+            .name(name)
+            .email(email)
+            .password(encodedCurrentPassword)
+            .phone(phone)
+            .roles(roles)
+            .permissions(permissions)
+            .isEmpty(false)
+            .build();
+    when(queryBus.ask(any(UserSearchByEmailQry.class))).thenReturn(userRes);
+    when(passwordPort.matches(currentPassword, encodedCurrentPassword)).thenReturn(true);
+    when(queryBus.ask(any(EncryptPasswordQry.class)))
+        .thenReturn(new EncryptPasswordRes(encodedNewPassword));
+    changePassword.execute(email, currentPassword, newPassword, confirmationPassword);
+    verify(queryBus).ask(any(UserSearchByEmailQry.class));
+    verify(passwordPort).matches(currentPassword, encodedCurrentPassword);
+    verify(queryBus).ask(any(EncryptPasswordQry.class));
+    verify(commandBus).dispatch(any(UserUpdateCmd.class));
+  }
 }

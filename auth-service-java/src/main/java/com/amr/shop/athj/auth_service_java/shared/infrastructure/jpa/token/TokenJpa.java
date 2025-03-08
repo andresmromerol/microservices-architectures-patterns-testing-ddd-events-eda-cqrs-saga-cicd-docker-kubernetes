@@ -17,20 +17,19 @@ import lombok.NoArgsConstructor;
 @Table(name = "auth_tokens")
 public class TokenJpa {
 
-    @Id
-    public UUID id;
+  @Id public UUID id;
 
-    @Column(unique = true, length = 2000)
-    public String token;
+  @Column(unique = true, length = 2000)
+  public String token;
 
-    @Enumerated(EnumType.STRING)
-    public TokenType tokenType = TokenType.BEARER;
+  @Enumerated(EnumType.STRING)
+  public TokenType tokenType = TokenType.BEARER;
 
-    public boolean revoked;
+  public boolean revoked;
 
-    public boolean expired;
+  public boolean expired;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    public UserJpa user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  public UserJpa user;
 }

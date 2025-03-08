@@ -9,23 +9,22 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TokenJpaMapper {
-    private final ITokenJpaDao tokenJpaDao;
+  private final ITokenJpaDao tokenJpaDao;
 
-    @Autowired
-    public TokenJpaMapper(ITokenJpaDao tokenJpaDao) {
-        this.tokenJpaDao = tokenJpaDao;
-    }
+  @Autowired
+  public TokenJpaMapper(ITokenJpaDao tokenJpaDao) {
+    this.tokenJpaDao = tokenJpaDao;
+  }
 
-    public TokenJpa toTokenJpa(TokenModel tokenModel) {
-        UserJpa user =
-                tokenJpaDao.fromUserGetReferenceToUser(tokenModel.getUserId().getValue());
-        return TokenJpa.builder()
-                .id(tokenModel.getId().getValue())
-                .token(tokenModel.getToken())
-                .tokenType(tokenModel.getTokenType())
-                .expired(tokenModel.isExpired())
-                .revoked(tokenModel.isRevoked())
-                .user(user)
-                .build();
-    }
+  public TokenJpa toTokenJpa(TokenModel tokenModel) {
+    UserJpa user = tokenJpaDao.fromUserGetReferenceToUser(tokenModel.getUserId().getValue());
+    return TokenJpa.builder()
+        .id(tokenModel.getId().getValue())
+        .token(tokenModel.getToken())
+        .tokenType(tokenModel.getTokenType())
+        .expired(tokenModel.isExpired())
+        .revoked(tokenModel.isRevoked())
+        .user(user)
+        .build();
+  }
 }

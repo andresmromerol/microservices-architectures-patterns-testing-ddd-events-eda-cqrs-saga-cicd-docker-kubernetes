@@ -14,26 +14,22 @@ import org.mockito.MockitoAnnotations;
 
 class TokenSaveTest {
 
-    @Mock
-    private ITokenPersistencePort tokenPersistencePort;
+  @Mock private ITokenPersistencePort tokenPersistencePort;
 
-    private TokenSave tokenSave;
+  private TokenSave tokenSave;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        tokenSave = new TokenSave(tokenPersistencePort);
-    }
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+    tokenSave = new TokenSave(tokenPersistencePort);
+  }
 
-    @Test
-    void shouldSaveToken() {
-        UUID userId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
-        String token = "test-token";
-
-        doNothing().when(tokenPersistencePort).save(any(TokenModel.class));
-
-        tokenSave.execute(userId, token);
-
-        verify(tokenPersistencePort).save(any(TokenModel.class));
-    }
+  @Test
+  void shouldSaveToken() {
+    UUID userId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
+    String token = "test-token";
+    doNothing().when(tokenPersistencePort).save(any(TokenModel.class));
+    tokenSave.execute(userId, token);
+    verify(tokenPersistencePort).save(any(TokenModel.class));
+  }
 }

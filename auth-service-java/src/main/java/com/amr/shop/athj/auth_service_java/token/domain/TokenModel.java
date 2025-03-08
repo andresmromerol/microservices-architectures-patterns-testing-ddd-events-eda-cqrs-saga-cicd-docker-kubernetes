@@ -7,48 +7,58 @@ import com.amr.shop.cmmj.common_java_context.shared.abstracts.AggregateRoot;
 
 public class TokenModel extends AggregateRoot<TokenId> {
 
-    private final String token;
+  private final String token;
 
-    private final TokenType tokenType;
+  private final TokenType tokenType;
 
-    private final boolean revoked;
+  private final boolean revoked;
 
-    private final boolean expired;
+  private final boolean expired;
 
-    private final UserId userId;
+  private final UserId userId;
 
-    public TokenModel(
-            TokenId tokenId, String token, TokenType tokenType, boolean revoked, boolean expired, UserId userId) {
-        this.setId(tokenId);
-        this.token = token;
-        this.tokenType = tokenType;
-        this.revoked = revoked;
-        this.expired = expired;
-        this.userId = userId;
-    }
+  public TokenModel(
+      TokenId tokenId,
+      String token,
+      TokenType tokenType,
+      boolean revoked,
+      boolean expired,
+      UserId userId) {
+    this.setId(tokenId);
+    this.token = token;
+    this.tokenType = tokenType;
+    this.revoked = revoked;
+    this.expired = expired;
+    this.userId = userId;
+  }
 
-    public static TokenModel create(
-            TokenId tokenId, String token, TokenType tokenType, boolean revoked, boolean expired, UserId userId) {
-        return new TokenModel(tokenId, token, tokenType, revoked, expired, userId);
-    }
+  public static TokenModel create(
+      TokenId tokenId,
+      String token,
+      TokenType tokenType,
+      boolean revoked,
+      boolean expired,
+      UserId userId) {
+    return new TokenModel(tokenId, token, tokenType, revoked, expired, userId);
+  }
 
-    public String getToken() {
-        return token;
-    }
+  public String getToken() {
+    return token;
+  }
 
-    public TokenType getTokenType() {
-        return tokenType;
-    }
+  public TokenType getTokenType() {
+    return tokenType;
+  }
 
-    public boolean isRevoked() {
-        return revoked;
-    }
+  public boolean isRevoked() {
+    return revoked;
+  }
 
-    public boolean isExpired() {
-        return expired;
-    }
+  public boolean isExpired() {
+    return expired;
+  }
 
-    public UserId getUserId() {
-        return userId;
-    }
+  public UserId getUserId() {
+    return userId;
+  }
 }

@@ -13,41 +13,34 @@ import org.springframework.stereotype.Component;
 @Component
 public final class QueryHandlersLocal {
 
-    HashMap<Class<? extends IQuery>, Class<? extends IQueryHandler>> indexedQueryHandlers;
+  HashMap<Class<? extends IQuery>, Class<? extends IQueryHandler>> indexedQueryHandlers;
 
-    public QueryHandlersLocal() {
-        String path = CQBusEnum.AUTH_SERVICE_JAVA.getValue();
-        Reflections reflections = new Reflections(path);
-        Set<Class<? extends IQueryHandler>> classes = reflections.getSubTypesOf(IQueryHandler.class);
+  public QueryHandlersLocal() {
+    String path = CQBusEnum.AUTH_SERVICE_JAVA.getValue();
+    Reflections reflections = new Reflections(path);
+    Set<Class<? extends IQueryHandler>> classes = reflections.getSubTypesOf(IQueryHandler.class);
+    indexedQueryHandlers = formatHandlers(classes);
+  }
 
-        indexedQueryHandlers = formatHandlers(classes);
+  public Class<? extends IQueryHandler> search(Class<? extends IQuery> queryClass)
+      throws QueryNotRegisteredException {
+    Class<? extends IQueryHandler> queryHandlerClass = indexedQueryHandlers.get(queryClass);
+    if (null == queryHandlerClass) {
+      throw new QueryNotRegisteredException(queryClass);
+    }
+    return queryHandlerClass;
+  }
+
+  private HashMap<Class<? extends IQuery>, Class<? extends IQueryHandler>> formatHandlers(
+      Set<Class<? extends IQueryHandler>> queryHandlers) {
+    HashMap<Class<? extends IQuery>, Class<? extends IQueryHandler>> handlers = new HashMap<>();
+    for (Class<? extends IQueryHandler> handler : queryHandlers) {
+      ParameterizedType paramType = (ParameterizedType) handler.getGenericInterfaces()[0];
+      Class<? extends IQuery> queryClass =
+          (Class<? extends IQuery>) paramType.getActualTypeArguments()[0];
+      handlers.put(queryClass, handler);
     }
 
-    public Class<? extends IQueryHandler> search(Class<? extends IQuery> queryClass)
-            throws QueryNotRegisteredException {
-
-        Class<? extends IQueryHandler> queryHandlerClass = indexedQueryHandlers.get(queryClass);
-
-        if (null == queryHandlerClass) {
-            throw new QueryNotRegisteredException(queryClass);
-        }
-
-        return queryHandlerClass;
-    }
-
-    private HashMap<Class<? extends IQuery>, Class<? extends IQueryHandler>> formatHandlers(
-            Set<Class<? extends IQueryHandler>> queryHandlers) {
-
-        HashMap<Class<? extends IQuery>, Class<? extends IQueryHandler>> handlers = new HashMap<>();
-
-        for (Class<? extends IQueryHandler> handler : queryHandlers) {
-            ParameterizedType paramType = (ParameterizedType) handler.getGenericInterfaces()[0];
-            Class<? extends IQuery> queryClass =
-                    (Class<? extends IQuery>) paramType.getActualTypeArguments()[0];
-
-            handlers.put(queryClass, handler);
-        }
-
-        return handlers;
-    }
+    return handlers;
+  }
 }

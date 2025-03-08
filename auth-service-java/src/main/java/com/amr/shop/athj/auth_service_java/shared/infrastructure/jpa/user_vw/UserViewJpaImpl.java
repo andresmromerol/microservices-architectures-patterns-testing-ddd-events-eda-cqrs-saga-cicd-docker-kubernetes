@@ -8,15 +8,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserViewJpaImpl implements UserViewJpaDao {
 
-    private final UserViewJpaRepository userViewJpaRepository;
+  private final UserViewJpaRepository userViewJpaRepository;
 
-    @Autowired
-    public UserViewJpaImpl(UserViewJpaRepository userViewJpaRepository) {
-        this.userViewJpaRepository = userViewJpaRepository;
-    }
+  @Autowired
+  public UserViewJpaImpl(UserViewJpaRepository userViewJpaRepository) {
+    this.userViewJpaRepository = userViewJpaRepository;
+  }
 
-    @Override
-    public Optional<UserJpa> findByEmail(String email) {
-        return userViewJpaRepository.findByEmail(email);
-    }
+  @Override
+  public Optional<UserJpa> findByEmail(String email) {
+    return userViewJpaRepository.findByEmail(email);
+  }
 }

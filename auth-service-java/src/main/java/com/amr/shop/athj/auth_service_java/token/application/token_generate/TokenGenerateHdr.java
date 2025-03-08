@@ -7,15 +7,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenGenerateHdr implements IQueryHandler<TokenGenerateQry, TokenGenerateRes> {
 
-    private final TokenGenerate tokenGenerate;
+  private final TokenGenerate tokenGenerate;
 
-    @Autowired
-    public TokenGenerateHdr(TokenGenerate tokenGenerate) {
-        this.tokenGenerate = tokenGenerate;
-    }
+  @Autowired
+  public TokenGenerateHdr(TokenGenerate tokenGenerate) {
+    this.tokenGenerate = tokenGenerate;
+  }
 
-    @Override
-    public TokenGenerateRes handle(TokenGenerateQry query) {
-        return tokenGenerate.execute(query.token(), query.secretKey());
-    }
+  @Override
+  public TokenGenerateRes handle(TokenGenerateQry query) {
+    return tokenGenerate.execute(query.token(), query.secretKey());
+  }
 }

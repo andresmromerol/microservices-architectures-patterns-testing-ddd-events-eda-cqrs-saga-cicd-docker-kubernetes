@@ -21,24 +21,25 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class UserAuthenticateAuthRestController extends ApiController {
 
-    @Autowired
-    public UserAuthenticateAuthRestController(IQueryBus queryBus, ICommandBus commandBus) {
-        super(queryBus, commandBus);
-    }
+  @Autowired
+  public UserAuthenticateAuthRestController(IQueryBus queryBus, ICommandBus commandBus) {
+    super(queryBus, commandBus);
+  }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<UserAuthResponse> authenticate(@RequestBody UserAuthenticateRequest r) {
-        log.info("Starting authentication for email: {}", r.getEmail());
-        dispatch(new AuthenticationTokenCmd(r.getEmail(), r.getPassword()));
-        log.info("Authentication successful for email: {}", r.getEmail());
-        log.info("Getting tokens for email: {}", r.getEmail());
-        AuthenticatorRes ask = ask(new AuthenticatorQry(r.getEmail()));
-        log.info("Tokens obtained for email: {}", r.getEmail());
-        UserAuthResponse res = UserAuthResponse.builder()
-                .accessToken(ask.accessToken())
-                .refreshToken(ask.refreshToken())
-                .build();
-        log.info("Returning tokens for email: {}", r.getEmail());
-        return ResponseEntity.ok(res);
-    }
+  @PostMapping("/authenticate")
+  public ResponseEntity<UserAuthResponse> authenticate(@RequestBody UserAuthenticateRequest r) {
+    log.info("Starting authentication for email: {}", r.getEmail());
+    dispatch(new AuthenticationTokenCmd(r.getEmail(), r.getPassword()));
+    log.info("Authentication successful for email: {}", r.getEmail());
+    log.info("Getting tokens for email: {}", r.getEmail());
+    AuthenticatorRes ask = ask(new AuthenticatorQry(r.getEmail()));
+    log.info("Tokens obtained for email: {}", r.getEmail());
+    UserAuthResponse res =
+        UserAuthResponse.builder()
+            .accessToken(ask.accessToken())
+            .refreshToken(ask.refreshToken())
+            .build();
+    log.info("Returning tokens for email: {}", r.getEmail());
+    return ResponseEntity.ok(res);
+  }
 }

@@ -105,6 +105,9 @@
 							<version>2.35.0</version>
 						</palantirJavaFormat>
 						<formatAnnotations/>
+						<googleJavaFormat />
+						<trimTrailingWhitespace />
+						<endWithNewline />
 					</java>
 				</configuration>
 				<executions>

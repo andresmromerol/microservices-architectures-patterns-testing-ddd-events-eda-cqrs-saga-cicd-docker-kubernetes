@@ -21,53 +21,53 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class Authentication {
-    private final IQueryBus queryBus;
-    private final ICommandBus commandBus;
-    private final IAuthenticationPort authenticationPort;
+  private final IQueryBus queryBus;
+  private final ICommandBus commandBus;
+  private final IAuthenticationPort authenticationPort;
 
-    @Autowired
-    public Authentication(IQueryBus queryBus, ICommandBus commandBus, IAuthenticationPort authenticationPort) {
-        this.queryBus = queryBus;
-        this.commandBus = commandBus;
-        this.authenticationPort = authenticationPort;
+  @Autowired
+  public Authentication(
+      IQueryBus queryBus, ICommandBus commandBus, IAuthenticationPort authenticationPort) {
+    this.queryBus = queryBus;
+    this.commandBus = commandBus;
+    this.authenticationPort = authenticationPort;
+  }
+
+  public AuthenticatorRes execute(String email) {
+    log.info("Authenticating user with email: {}", email);
+    UserSearchByEmailRes user = getAuthenticatedUser(email);
+    BuildTokenDto token = getToken(user);
+    BuildTokenDto refreshToken = getRefreshToken(user);
+    String secretKey = authenticationPort.getSecretKey();
+    TokenGenerateRes tokenGenerate = queryBus.ask(new TokenGenerateQry(token, secretKey));
+    TokenRefreshRes refreshTokenGenerate =
+        queryBus.ask(new TokenRefreshQry(refreshToken, secretKey));
+    log.info("Generating token for user with id: {}", user.id());
+    UUID userId = user.id();
+    commandBus.dispatch(new TokenRevokeCmd(userId));
+    commandBus.dispatch(new TokenSaveCmd(userId, tokenGenerate.tokenGenerated()));
+    log.info("Authentication finished successfully for user with id: {}", user.id());
+    return new AuthenticatorRes(
+        tokenGenerate.tokenGenerated(), refreshTokenGenerate.refreshTokenGenerated());
+  }
+
+  private BuildTokenDto getRefreshToken(UserSearchByEmailRes user) {
+    long refreshExpiration = authenticationPort.refreshExpiration();
+    return new BuildTokenDto(user.id(), user.name(), user.email(), user.roles(), refreshExpiration);
+  }
+
+  private BuildTokenDto getToken(UserSearchByEmailRes user) {
+    long jwtExpiration = authenticationPort.getJwtExpiration();
+    return new BuildTokenDto(user.id(), user.name(), user.email(), user.roles(), jwtExpiration);
+  }
+
+  private UserSearchByEmailRes getAuthenticatedUser(String email) {
+    UserSearchByEmailRes res = queryBus.ask(new UserSearchByEmailQry(email));
+    if (res.isEmpty()) {
+      log.info("User with email: {} not found", email);
+      throw new UserAuthUserNotFoundException(email);
     }
-
-    public AuthenticatorRes execute(String email) {
-        log.info("Authenticating user with email: {}", email);
-        UserSearchByEmailRes user = getAuthenticatedUser(email);
-        BuildTokenDto token = getToken(user);
-        BuildTokenDto refreshToken = getRefreshToken(user);
-
-        String secretKey = authenticationPort.getSecretKey();
-        TokenGenerateRes tokenGenerate = queryBus.ask(new TokenGenerateQry(token, secretKey));
-        TokenRefreshRes refreshTokenGenerate = queryBus.ask(new TokenRefreshQry(refreshToken, secretKey));
-
-        log.info("Generating token for user with id: {}", user.id());
-        UUID userId = user.id();
-        commandBus.dispatch(new TokenRevokeCmd(userId));
-        commandBus.dispatch(new TokenSaveCmd(userId, tokenGenerate.tokenGenerated()));
-
-        log.info("Authentication finished successfully for user with id: {}", user.id());
-        return new AuthenticatorRes(tokenGenerate.tokenGenerated(), refreshTokenGenerate.refreshTokenGenerated());
-    }
-
-    private BuildTokenDto getRefreshToken(UserSearchByEmailRes user) {
-        long refreshExpiration = authenticationPort.refreshExpiration();
-        return new BuildTokenDto(user.id(), user.name(), user.email(), user.roles(), refreshExpiration);
-    }
-
-    private BuildTokenDto getToken(UserSearchByEmailRes user) {
-        long jwtExpiration = authenticationPort.getJwtExpiration();
-        return new BuildTokenDto(user.id(), user.name(), user.email(), user.roles(), jwtExpiration);
-    }
-
-    private UserSearchByEmailRes getAuthenticatedUser(String email) {
-        UserSearchByEmailRes res = queryBus.ask(new UserSearchByEmailQry(email));
-        if (res.isEmpty()) {
-            log.info("User with email: {} not found", email);
-            throw new UserAuthUserNotFoundException(email);
-        }
-        log.info("User with email: {} found", email);
-        return res;
-    }
+    log.info("User with email: {} found", email);
+    return res;
+  }
 }

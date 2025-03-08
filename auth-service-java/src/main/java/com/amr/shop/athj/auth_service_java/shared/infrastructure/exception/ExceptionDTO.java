@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class ExceptionDTO {
-    private final int code;
-    private final String businessCode;
-    private final List<String> messages;
+  private final int code;
+  private final String businessCode;
+  private final List<String> messages;
 }

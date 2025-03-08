@@ -17,19 +17,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class Logout implements LogoutHandler {
 
-    private final TokenJpaRepository tokenRepository;
-    private final ITokenJpaDao tokenJpaDao;
+  private final TokenJpaRepository tokenRepository;
+  private final ITokenJpaDao tokenJpaDao;
 
-    @Override
-    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        String authHeader = request.getHeader(AuthTitleEnum.AUTHORIZATION_HEADER.getValue());
-        String jwt = AuthUtil.extractBearerToken(authHeader);
-        TokenJpa storedToken = tokenRepository.findByToken(jwt).orElse(null);
-        if (storedToken != null) {
-            storedToken.setExpired(true);
-            storedToken.setRevoked(true);
-            tokenJpaDao.save(storedToken);
-            SecurityContextHolder.clearContext();
-        }
+  @Override
+  public void logout(
+      HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+    String authHeader = request.getHeader(AuthTitleEnum.AUTHORIZATION_HEADER.getValue());
+    String jwt = AuthUtil.extractBearerToken(authHeader);
+    TokenJpa storedToken = tokenRepository.findByToken(jwt).orElse(null);
+    if (storedToken != null) {
+      storedToken.setExpired(true);
+      storedToken.setRevoked(true);
+      tokenJpaDao.save(storedToken);
+      SecurityContextHolder.clearContext();
     }
+  }
 }

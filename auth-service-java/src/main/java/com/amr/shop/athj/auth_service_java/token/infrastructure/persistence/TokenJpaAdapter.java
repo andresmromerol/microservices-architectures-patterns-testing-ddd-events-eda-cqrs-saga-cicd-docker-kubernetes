@@ -14,27 +14,26 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class TokenJpaAdapter implements ITokenPersistencePort {
 
-    private final ITokenJpaDao ITokenJpaDao;
-    private final TokenJpaMapper tokenJpaMapper;
+  private final ITokenJpaDao ITokenJpaDao;
+  private final TokenJpaMapper tokenJpaMapper;
 
-    @Autowired
-    public TokenJpaAdapter(ITokenJpaDao ITokenJpaDao, TokenJpaMapper tokenJpaMapper) {
-        this.ITokenJpaDao = ITokenJpaDao;
-        this.tokenJpaMapper = tokenJpaMapper;
-    }
+  @Autowired
+  public TokenJpaAdapter(ITokenJpaDao ITokenJpaDao, TokenJpaMapper tokenJpaMapper) {
+    this.ITokenJpaDao = ITokenJpaDao;
+    this.tokenJpaMapper = tokenJpaMapper;
+  }
 
-    @Override
-    public void revokeUserTokens(UserId userId) {
-        log.info("Revoking tokens for user: {}", userId.getValue());
+  @Override
+  public void revokeUserTokens(UserId userId) {
+    log.info("Revoking tokens for user: {}", userId.getValue());
+    Set<TokenJpa> userTokens = ITokenJpaDao.findByUserAndValid(userId);
+    ITokenJpaDao.markAsRevokedAndExpiredTokens(userTokens);
+    ITokenJpaDao.saveRevokedTokens(userTokens);
+  }
 
-        Set<TokenJpa> userTokens = ITokenJpaDao.findByUserAndValid(userId);
-        ITokenJpaDao.markAsRevokedAndExpiredTokens(userTokens);
-        ITokenJpaDao.saveRevokedTokens(userTokens);
-    }
-
-    @Override
-    public void save(TokenModel tokenModel) {
-        log.info("Saving token for user: {}", tokenModel.getUserId().getValue());
-        ITokenJpaDao.save(tokenJpaMapper.toTokenJpa(tokenModel));
-    }
+  @Override
+  public void save(TokenModel tokenModel) {
+    log.info("Saving token for user: {}", tokenModel.getUserId().getValue());
+    ITokenJpaDao.save(tokenJpaMapper.toTokenJpa(tokenModel));
+  }
 }

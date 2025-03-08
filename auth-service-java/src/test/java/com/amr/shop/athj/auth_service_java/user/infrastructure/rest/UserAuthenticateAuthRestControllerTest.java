@@ -23,64 +23,61 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 class UserAuthenticateAuthRestControllerTest {
 
-    private static final String USER_EMAIL = "andres@email.com";
-    private static final String USER_PASSWORD = "123456789";
-    private static final String ACCESS_TOKEN = "test.access.token";
-    private static final String REFRESH_TOKEN = "test.refresh.token";
-    private static final String BASE_URL = "/api/v1/user/authenticate";
-    private MockMvc mockMvc;
+  private static final String USER_EMAIL = "andres@email.com";
+  private static final String USER_PASSWORD = "123456789";
+  private static final String ACCESS_TOKEN = "test.access.token";
+  private static final String REFRESH_TOKEN = "test.refresh.token";
+  private static final String BASE_URL = "/api/v1/user/authenticate";
+  private MockMvc mockMvc;
 
-    @Mock
-    private ICommandBus commandBus;
+  @Mock private ICommandBus commandBus;
 
-    @Mock
-    private IQueryBus queryBus;
+  @Mock private IQueryBus queryBus;
 
-    private ObjectMapper objectMapper;
-    private UserAuthenticateAuthRestController controller;
+  private ObjectMapper objectMapper;
+  private UserAuthenticateAuthRestController controller;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        controller = new UserAuthenticateAuthRestController(queryBus, commandBus);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller)
-                .setControllerAdvice(new ResponseEntityExceptionHandler() {})
-                .build();
-        objectMapper = new ObjectMapper();
-    }
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+    controller = new UserAuthenticateAuthRestController(queryBus, commandBus);
+    mockMvc =
+        MockMvcBuilders.standaloneSetup(controller)
+            .setControllerAdvice(new ResponseEntityExceptionHandler() {})
+            .build();
+    objectMapper = new ObjectMapper();
+  }
 
-    @Test
-    void shouldAuthenticateSuccessfully() throws Exception {
-        String requestJson = createValidRequestJson();
+  @Test
+  void shouldAuthenticateSuccessfully() throws Exception {
+    String requestJson = createValidRequestJson();
+    AuthenticatorRes authenticatorRes = new AuthenticatorRes(ACCESS_TOKEN, REFRESH_TOKEN);
+    when(queryBus.ask(any(AuthenticatorQry.class))).thenReturn(authenticatorRes);
+    doNothing().when(commandBus).dispatch(any(AuthenticationTokenCmd.class));
+    mockMvc
+        .perform(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.access_token").value(ACCESS_TOKEN))
+        .andExpect(jsonPath("$.refresh_token").value(REFRESH_TOKEN));
+    verify(queryBus).ask(any(AuthenticatorQry.class));
+    verify(commandBus).dispatch(any(AuthenticationTokenCmd.class));
+  }
 
-        AuthenticatorRes authenticatorRes = new AuthenticatorRes(ACCESS_TOKEN, REFRESH_TOKEN);
-        when(queryBus.ask(any(AuthenticatorQry.class))).thenReturn(authenticatorRes);
+  @Test
+  void shouldReturnBadRequestWhenBodyIsInvalid() throws Exception {
+    mockMvc
+        .perform(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content("invalid json"))
+        .andExpect(status().isBadRequest());
+  }
 
-        doNothing().when(commandBus).dispatch(any(AuthenticationTokenCmd.class));
-
-        mockMvc.perform(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(requestJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.access_token").value(ACCESS_TOKEN))
-                .andExpect(jsonPath("$.refresh_token").value(REFRESH_TOKEN));
-
-        verify(queryBus).ask(any(AuthenticatorQry.class));
-        verify(commandBus).dispatch(any(AuthenticationTokenCmd.class));
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenBodyIsInvalid() throws Exception {
-        mockMvc.perform(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content("invalid json"))
-                .andExpect(status().isBadRequest());
-    }
-
-    private String createValidRequestJson() {
-        return String.format(
-                """
+  private String createValidRequestJson() {
+    return String.format(
+        """
                         {
                             "email": "%s",
                             "password": "%s"
                         }
                         """,
-                USER_EMAIL, USER_PASSWORD);
-    }
+        USER_EMAIL, USER_PASSWORD);
+  }
 }

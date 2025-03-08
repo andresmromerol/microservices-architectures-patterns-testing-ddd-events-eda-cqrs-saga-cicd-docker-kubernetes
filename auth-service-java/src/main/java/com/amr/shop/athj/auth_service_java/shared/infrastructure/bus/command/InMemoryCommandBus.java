@@ -10,27 +10,24 @@ import org.springframework.stereotype.Service;
 @Service
 public final class InMemoryCommandBus implements ICommandBus {
 
-    private final CommandHandlersLocal information;
+  private final CommandHandlersLocal information;
 
-    private final ApplicationContext context;
+  private final ApplicationContext context;
 
-    public InMemoryCommandBus(CommandHandlersLocal information, ApplicationContext context) {
+  public InMemoryCommandBus(CommandHandlersLocal information, ApplicationContext context) {
 
-        this.information = information;
-        this.context = context;
+    this.information = information;
+    this.context = context;
+  }
+
+  @Override
+  public void dispatch(ICommand command) throws CommandHandlerExecutionException {
+    try {
+      Class<? extends ICommandHandler> commandHandlerClass = information.search(command.getClass());
+      ICommandHandler handler = context.getBean(commandHandlerClass);
+      handler.handle(command);
+    } catch (Throwable error) {
+      throw new CommandHandlerExecutionException(error);
     }
-
-    @Override
-    public void dispatch(ICommand command) throws CommandHandlerExecutionException {
-
-        try {
-            Class<? extends ICommandHandler> commandHandlerClass = information.search(command.getClass());
-
-            ICommandHandler handler = context.getBean(commandHandlerClass);
-
-            handler.handle(command);
-        } catch (Throwable error) {
-            throw new CommandHandlerExecutionException(error);
-        }
-    }
+  }
 }

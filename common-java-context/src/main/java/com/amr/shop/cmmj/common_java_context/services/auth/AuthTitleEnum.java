@@ -1,22 +1,22 @@
 package com.amr.shop.cmmj.common_java_context.services.auth;
 
 public enum AuthTitleEnum {
-    BEARER("Bearer "),
+  BEARER("Bearer "),
 
-    AUTHORIZATION_HEADER("Authorization"),
-    ROLE("ROLE_");
+  AUTHORIZATION_HEADER("Authorization"),
+  ROLE("ROLE_");
 
-    private final String value;
+  private final String value;
 
-    AuthTitleEnum(String value) {
-        this.value = value;
-    }
+  AuthTitleEnum(String value) {
+    this.value = value;
+  }
 
-    public String getValue() {
-        return value;
-    }
+  public String getValue() {
+    return value;
+  }
 
-    public int getLength() {
-        return value.length();
-    }
+  public int getLength() {
+    return value.length();
+  }
 }

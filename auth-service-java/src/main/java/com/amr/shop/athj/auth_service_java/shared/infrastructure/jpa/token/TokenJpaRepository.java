@@ -8,17 +8,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface TokenJpaRepository extends JpaRepository<TokenJpa, Integer> {
-    @Query(
-            value =
-                    """
+  @Query(
+      value =
+          """
             SELECT t.*
             FROM auth_tokens t
             INNER JOIN auth_users u ON t.user_id = u.id
             WHERE u.id = UNHEX(REPLACE(:id, '-', ''))
             AND (t.expired = FALSE OR t.revoked = FALSE)
             """,
-            nativeQuery = true)
-    Set<TokenJpa> findAllValidTokenByUser(@Param("id") UUID id);
+      nativeQuery = true)
+  Set<TokenJpa> findAllValidTokenByUser(@Param("id") UUID id);
 
-    Optional<TokenJpa> findByToken(String token);
+  Optional<TokenJpa> findByToken(String token);
 }

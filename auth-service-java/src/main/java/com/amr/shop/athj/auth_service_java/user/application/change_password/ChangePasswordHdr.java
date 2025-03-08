@@ -6,16 +6,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ChangePasswordHdr implements ICommandHandler<ChangePasswordCmd> {
-    private final ChangePassword changePassword;
+  private final ChangePassword changePassword;
 
-    @Autowired
-    public ChangePasswordHdr(ChangePassword changePassword) {
-        this.changePassword = changePassword;
-    }
+  @Autowired
+  public ChangePasswordHdr(ChangePassword changePassword) {
+    this.changePassword = changePassword;
+  }
 
-    @Override
-    public void handle(ChangePasswordCmd command) {
-        changePassword.execute(
-                command.email(), command.currentPassword(), command.newPassword(), command.confirmationPassword());
-    }
+  @Override
+  public void handle(ChangePasswordCmd command) {
+    changePassword.execute(
+        command.email(),
+        command.currentPassword(),
+        command.newPassword(),
+        command.confirmationPassword());
+  }
 }

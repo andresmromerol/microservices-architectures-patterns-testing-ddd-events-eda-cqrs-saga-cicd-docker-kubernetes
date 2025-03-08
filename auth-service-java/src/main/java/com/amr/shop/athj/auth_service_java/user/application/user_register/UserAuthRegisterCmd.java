@@ -6,4 +6,5 @@ import java.util.Set;
 import java.util.UUID;
 
 public record UserAuthRegisterCmd(
-        UUID id, String name, String email, String password, String phone, Set<RoleEnum> roles) implements ICommand {}
+    UUID id, String name, String email, String password, String phone, Set<RoleEnum> roles)
+    implements ICommand {}

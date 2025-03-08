@@ -11,7 +11,7 @@
 
 <div align="center">
 
-### [View auth-refresh-token-endpoint-diagram.plantuml](./uml/auth-refresh-token-endpoint-diagram.plantuml)
+### [View gateway-module-diagram.plantuml](./uml/8-gateway-module-diagram.plantuml)
 <img src="./diagrams/8-feat-gateway-authorization-routes-and-header-config-01.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/8-feat-gateway-authorization-routes-and-header-config-02.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/8-feat-gateway-authorization-routes-and-header-config-03.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
@@ -27,7 +27,7 @@
 
 <div align="center">
 
-### [View auth-refresh-token-endpoint-diagram.plantuml](./uml/auth-refresh-token-endpoint-diagram.plantuml)
+### [View auth-refresh-token-endpoint-diagram.plantuml](./uml/7-auth-refresh-token-endpoint-diagram.plantuml)
 <img src="./diagrams/7-feat-add-refresh-token-auth-01.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/7-feat-add-refresh-token-auth-02.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/7-feat-add-refresh-token-auth-03.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
@@ -43,7 +43,7 @@
 
 <div align="center">
 
-### [View auth-logout-diagram.plantuml](./uml/auth-logout-diagram.plantuml)
+### [View auth-logout-diagram.plantuml](./uml/6-auth-logout-diagram.plantuml)
 <img src="./diagrams/6-feat-add-logout-auth-01.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/6-feat-add-logout-auth-02.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 </div>
@@ -61,7 +61,7 @@
 
 <div align="center">
 
-### [View auth-change-password-endpoint-diagram.plantuml](./uml/auth-change-password-endpoint-diagram.plantuml)
+### [View auth-change-password-endpoint-diagram.plantuml](./uml/5-auth-change-password-endpoint-diagram.plantuml)
 <img src="./diagrams/5-feat-add-change-password-auth-01.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/5-feat-add-change-password-auth-02.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/5-feat-add-change-password-auth-03.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
@@ -80,7 +80,7 @@
 
 <div align="center">
 
-### [View auth-authenticate-endpoint-diagram.plantuml](./uml/auth-authenticate-endpoint-diagram.plantuml)
+### [View auth-authenticate-endpoint-diagram.plantuml](./uml/4-auth-authenticate-endpoint-diagram.plantuml)
 <img src="./diagrams/4-feat-add-user-authentication-endpoint-01.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/4-feat-add-user-authentication-endpoint-02.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/4-feat-add-user-authentication-endpoint-03.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
@@ -103,7 +103,7 @@
 
 <div align="center">
 
-### [View auth-register-endpoint-diagram.plantuml](./uml/auth-register-endpoint-diagram.plantuml)
+### [View auth-register-endpoint-diagram.plantuml](./uml/3-auth-register-endpoint-diagram.plantuml)
 <img src="./diagrams/3-auth-register-endpoint-diagram-1.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/3-auth-register-endpoint-diagram-2.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 </div>
@@ -124,13 +124,13 @@
 ##  🌵 2-feat/initialize-auth-service-java
 <div align="center">
 
-### [View microservices-component-diagram](./uml/microservices-component-diagram.puml)
+### [View microservices-component-diagram](./uml/1-microservices-component-diagram.puml)
 <img src="./diagrams/2-feat-initialize-auth-service-java.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 400px; width: 100%; height: auto;">
 </div>
 
 ##  🌵 1-feat/add-configuration-discovery-gateway-observability-monitoring
 <div align="center">
 
-### [View microservices-component-diagram](./uml/microservices-component-diagram.puml)
+### [View microservices-component-diagram](./uml/1-microservices-component-diagram.puml)
 <img src="./diagrams/1-feat-add-configuration-discovery-gateway-observability-monitoring.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 400px; width: 100%; height: auto;">
 </div>

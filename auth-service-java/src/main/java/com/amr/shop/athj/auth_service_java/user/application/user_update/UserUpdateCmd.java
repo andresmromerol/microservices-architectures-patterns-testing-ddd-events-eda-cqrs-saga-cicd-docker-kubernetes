@@ -7,5 +7,11 @@ import java.util.Set;
 import java.util.UUID;
 
 public record UserUpdateCmd(
-        UUID id, String name, String email, String password, String phone, Set<RoleEnum> roles, UserStatusEnum status)
-        implements ICommand {}
+    UUID id,
+    String name,
+    String email,
+    String password,
+    String phone,
+    Set<RoleEnum> roles,
+    UserStatusEnum status)
+    implements ICommand {}

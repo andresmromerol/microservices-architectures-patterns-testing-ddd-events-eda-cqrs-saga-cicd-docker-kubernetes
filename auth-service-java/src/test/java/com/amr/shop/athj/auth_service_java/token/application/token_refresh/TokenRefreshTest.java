@@ -14,34 +14,31 @@ import org.mockito.MockitoAnnotations;
 
 class TokenRefreshTest {
 
-    private static final String VALID_EMAIL = "andres@email.com";
-    private static final String VALID_SECRET_KEY = "test-secret-key";
-    private static final long VALID_EXPIRATION = 1000L;
-    private static final String EXPECTED_REFRESH_TOKEN = "refresh-token";
+  private static final String VALID_EMAIL = "andres@email.com";
+  private static final String VALID_SECRET_KEY = "test-secret-key";
+  private static final long VALID_EXPIRATION = 1000L;
+  private static final String EXPECTED_REFRESH_TOKEN = "refresh-token";
 
-    @Mock
-    private ITokenPort tokenPort;
+  @Mock private ITokenPort tokenPort;
 
-    private TokenRefresh tokenRefresh;
+  private TokenRefresh tokenRefresh;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        tokenRefresh = new TokenRefresh(tokenPort);
-    }
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+    tokenRefresh = new TokenRefresh(tokenPort);
+  }
 
-    @Test
-    void shouldRefreshToken() {
-        Map<String, Object> extraClaims = new HashMap<>();
-        extraClaims.put("role", "USER");
-        BuildTokenDto tokenDto = new BuildTokenDto(VALID_EMAIL, VALID_EXPIRATION, extraClaims);
-
-        when(tokenPort.generateRefreshToken(tokenDto, VALID_SECRET_KEY)).thenReturn(EXPECTED_REFRESH_TOKEN);
-
-        TokenRefreshRes response = tokenRefresh.execute(tokenDto, VALID_SECRET_KEY);
-
-        assertNotNull(response);
-        assertEquals(EXPECTED_REFRESH_TOKEN, response.refreshTokenGenerated());
-        verify(tokenPort, times(1)).generateRefreshToken(tokenDto, VALID_SECRET_KEY);
-    }
+  @Test
+  void shouldRefreshToken() {
+    Map<String, Object> extraClaims = new HashMap<>();
+    extraClaims.put("role", "USER");
+    BuildTokenDto tokenDto = new BuildTokenDto(VALID_EMAIL, VALID_EXPIRATION, extraClaims);
+    when(tokenPort.generateRefreshToken(tokenDto, VALID_SECRET_KEY))
+        .thenReturn(EXPECTED_REFRESH_TOKEN);
+    TokenRefreshRes response = tokenRefresh.execute(tokenDto, VALID_SECRET_KEY);
+    assertNotNull(response);
+    assertEquals(EXPECTED_REFRESH_TOKEN, response.refreshTokenGenerated());
+    verify(tokenPort, times(1)).generateRefreshToken(tokenDto, VALID_SECRET_KEY);
+  }
 }

@@ -9,15 +9,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserJpaImpl implements IUserJpaDao {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+  @PersistenceContext private EntityManager entityManager;
 
-    @Autowired
-    public UserJpaImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+  @Autowired
+  public UserJpaImpl(EntityManager entityManager) {
+    this.entityManager = entityManager;
+  }
 
-    public UserJpa getReferenceToUser(UUID userId) {
-        return entityManager.getReference(UserJpa.class, userId);
-    }
+  public UserJpa getReferenceToUser(UUID userId) {
+    return entityManager.getReference(UserJpa.class, userId);
+  }
 }

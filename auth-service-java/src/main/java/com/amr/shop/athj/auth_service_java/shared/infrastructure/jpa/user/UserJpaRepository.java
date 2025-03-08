@@ -5,5 +5,5 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserJpaRepository extends JpaRepository<UserJpa, UUID> {
-    Optional<UserJpa> findByEmail(String email);
+  Optional<UserJpa> findByEmail(String email);
 }

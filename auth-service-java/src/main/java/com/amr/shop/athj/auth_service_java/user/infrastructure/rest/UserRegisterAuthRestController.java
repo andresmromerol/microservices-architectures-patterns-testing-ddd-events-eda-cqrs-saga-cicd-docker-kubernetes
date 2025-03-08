@@ -17,23 +17,24 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class UserRegisterAuthRestController extends ApiController {
 
-    @Autowired
-    public UserRegisterAuthRestController(IQueryBus queryBus, ICommandBus commandBus) {
-        super(queryBus, commandBus);
-    }
+  @Autowired
+  public UserRegisterAuthRestController(IQueryBus queryBus, ICommandBus commandBus) {
+    super(queryBus, commandBus);
+  }
 
-    @PutMapping("/register/{id}")
-    public ResponseEntity<?> register(@Valid @RequestBody UserAuthRegisterRequest request, @PathVariable UUID id) {
-        log.info("Starting user registration process for user with id: {}", id);
-
-        dispatch(new UserAuthRegisterCmd(
-                id,
-                request.getName(),
-                request.getEmail(),
-                request.getPassword(),
-                request.getPhone(),
-                request.getRoles()));
-        log.info("User registered successfully with id: {}", id);
-        return ResponseEntity.ok().build();
-    }
+  @PutMapping("/register/{id}")
+  public ResponseEntity<?> register(
+      @Valid @RequestBody UserAuthRegisterRequest request, @PathVariable UUID id) {
+    log.info("Starting user registration process for user with id: {}", id);
+    dispatch(
+        new UserAuthRegisterCmd(
+            id,
+            request.getName(),
+            request.getEmail(),
+            request.getPassword(),
+            request.getPhone(),
+            request.getRoles()));
+    log.info("User registered successfully with id: {}", id);
+    return ResponseEntity.ok().build();
+  }
 }

@@ -22,33 +22,32 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/user/")
 @Slf4j
 public class ChangePasswordAuthRestController extends ApiController {
-    private final IClaimPort claimPort;
+  private final IClaimPort claimPort;
 
-    @Autowired
-    public ChangePasswordAuthRestController(IQueryBus queryBus, ICommandBus commandBus, IClaimPort claimPort) {
-        super(queryBus, commandBus);
-        this.claimPort = claimPort;
-    }
+  @Autowired
+  public ChangePasswordAuthRestController(
+      IQueryBus queryBus, ICommandBus commandBus, IClaimPort claimPort) {
+    super(queryBus, commandBus);
+    this.claimPort = claimPort;
+  }
 
-    @PutMapping("/change-password")
-    public ResponseEntity<?> changePassword(
-            @RequestBody ChangePasswordRequest request, HttpServletRequest httpRequest) {
-
-        log.info("Starting password change process");
-
-        String authHeader = httpRequest.getHeader(AuthTitleEnum.AUTHORIZATION_HEADER.getValue());
-        String refreshToken = AuthUtil.extractBearerToken(authHeader);
-        String email = claimPort.extractUsername(refreshToken);
-
-        log.info("Authenticating user with email: {}", email);
-        dispatch(new AuthenticationTokenCmd(email, request.getCurrentPassword()));
-
-        log.info("Changing password for user with email: {}", email);
-        dispatch(new ChangePasswordCmd(
-                email, request.getCurrentPassword(), request.getNewPassword(), request.getConfirmationPassword()));
-
-        log.info("Password change process completed for user with email: {}", email);
-
-        return ResponseEntity.ok().build();
-    }
+  @PutMapping("/change-password")
+  public ResponseEntity<?> changePassword(
+      @RequestBody ChangePasswordRequest request, HttpServletRequest httpRequest) {
+    log.info("Starting password change process");
+    String authHeader = httpRequest.getHeader(AuthTitleEnum.AUTHORIZATION_HEADER.getValue());
+    String refreshToken = AuthUtil.extractBearerToken(authHeader);
+    String email = claimPort.extractUsername(refreshToken);
+    log.info("Authenticating user with email: {}", email);
+    dispatch(new AuthenticationTokenCmd(email, request.getCurrentPassword()));
+    log.info("Changing password for user with email: {}", email);
+    dispatch(
+        new ChangePasswordCmd(
+            email,
+            request.getCurrentPassword(),
+            request.getNewPassword(),
+            request.getConfirmationPassword()));
+    log.info("Password change process completed for user with email: {}", email);
+    return ResponseEntity.ok().build();
+  }
 }

@@ -9,23 +9,23 @@ import com.amr.shop.cmmj.common_java_context.shared.bus.query.QueryHandlerExecut
 
 public abstract class ApiController {
 
-    private final IQueryBus queryBus;
+  private final IQueryBus queryBus;
 
-    private final ICommandBus commandBus;
+  private final ICommandBus commandBus;
 
-    protected ApiController(IQueryBus queryBus, ICommandBus commandBus) {
+  protected ApiController(IQueryBus queryBus, ICommandBus commandBus) {
 
-        this.queryBus = queryBus;
-        this.commandBus = commandBus;
-    }
+    this.queryBus = queryBus;
+    this.commandBus = commandBus;
+  }
 
-    protected void dispatch(ICommand command) throws CommandHandlerExecutionException {
+  protected void dispatch(ICommand command) throws CommandHandlerExecutionException {
 
-        commandBus.dispatch(command);
-    }
+    commandBus.dispatch(command);
+  }
 
-    protected <R> R ask(IQuery query) throws QueryHandlerExecutionException {
+  protected <R> R ask(IQuery query) throws QueryHandlerExecutionException {
 
-        return queryBus.ask(query);
-    }
+    return queryBus.ask(query);
+  }
 }

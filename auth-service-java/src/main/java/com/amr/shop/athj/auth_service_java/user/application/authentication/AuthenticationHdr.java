@@ -5,14 +5,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationHdr implements IQueryHandler<AuthenticatorQry, AuthenticatorRes> {
-    private final Authentication authentication;
+  private final Authentication authentication;
 
-    public AuthenticationHdr(Authentication authentication) {
-        this.authentication = authentication;
-    }
+  public AuthenticationHdr(Authentication authentication) {
+    this.authentication = authentication;
+  }
 
-    @Override
-    public AuthenticatorRes handle(AuthenticatorQry query) {
-        return authentication.execute(query.email());
-    }
+  @Override
+  public AuthenticatorRes handle(AuthenticatorQry query) {
+    return authentication.execute(query.email());
+  }
 }

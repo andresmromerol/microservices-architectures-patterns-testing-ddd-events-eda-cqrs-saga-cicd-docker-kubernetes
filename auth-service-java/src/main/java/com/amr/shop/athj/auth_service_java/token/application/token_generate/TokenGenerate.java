@@ -9,19 +9,17 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class TokenGenerate {
-    private final ITokenPort tokenPort;
+  private final ITokenPort tokenPort;
 
-    @Autowired
-    public TokenGenerate(ITokenPort tokenPort) {
-        this.tokenPort = tokenPort;
-    }
+  @Autowired
+  public TokenGenerate(ITokenPort tokenPort) {
+    this.tokenPort = tokenPort;
+  }
 
-    public TokenGenerateRes execute(BuildTokenDto token, String secretKey) {
-
-        log.info("Generating token for user {}", token.getUsername());
-        String generatedToken = tokenPort.generateToken(token, secretKey);
-        log.info("Token generated successfully for user {}", token.getUsername());
-
-        return new TokenGenerateRes(generatedToken);
-    }
+  public TokenGenerateRes execute(BuildTokenDto token, String secretKey) {
+    log.info("Generating token for user {}", token.getUsername());
+    String generatedToken = tokenPort.generateToken(token, secretKey);
+    log.info("Token generated successfully for user {}", token.getUsername());
+    return new TokenGenerateRes(generatedToken);
+  }
 }

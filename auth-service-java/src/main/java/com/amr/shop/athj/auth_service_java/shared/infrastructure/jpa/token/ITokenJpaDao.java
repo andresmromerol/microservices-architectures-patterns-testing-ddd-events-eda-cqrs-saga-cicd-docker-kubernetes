@@ -6,13 +6,13 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface ITokenJpaDao {
-    Set<TokenJpa> findByUserAndValid(UserId userId);
+  Set<TokenJpa> findByUserAndValid(UserId userId);
 
-    void markAsRevokedAndExpiredTokens(Set<TokenJpa> userTokens);
+  void markAsRevokedAndExpiredTokens(Set<TokenJpa> userTokens);
 
-    void saveRevokedTokens(Set<TokenJpa> userTokens);
+  void saveRevokedTokens(Set<TokenJpa> userTokens);
 
-    void save(TokenJpa token);
+  void save(TokenJpa token);
 
-    UserJpa fromUserGetReferenceToUser(UUID userId);
+  UserJpa fromUserGetReferenceToUser(UUID userId);
 }

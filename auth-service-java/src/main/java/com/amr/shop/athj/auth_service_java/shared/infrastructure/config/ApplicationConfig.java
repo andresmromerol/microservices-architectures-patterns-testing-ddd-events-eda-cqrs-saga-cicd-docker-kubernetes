@@ -17,29 +17,32 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserViewJpaDao userViewJpaDao;
+  private final UserViewJpaDao userViewJpaDao;
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return username ->
-                userViewJpaDao.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
+  @Bean
+  public UserDetailsService userDetailsService() {
+    return username ->
+        userViewJpaDao
+            .findByEmail(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+  }
 
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider res = new DaoAuthenticationProvider();
-        res.setUserDetailsService(userDetailsService());
-        res.setPasswordEncoder(passwordEncoder());
-        return res;
-    }
+  @Bean
+  public AuthenticationProvider authenticationProvider() {
+    DaoAuthenticationProvider res = new DaoAuthenticationProvider();
+    res.setUserDetailsService(userDetailsService());
+    res.setPasswordEncoder(passwordEncoder());
+    return res;
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+      throws Exception {
+    return config.getAuthenticationManager();
+  }
 }

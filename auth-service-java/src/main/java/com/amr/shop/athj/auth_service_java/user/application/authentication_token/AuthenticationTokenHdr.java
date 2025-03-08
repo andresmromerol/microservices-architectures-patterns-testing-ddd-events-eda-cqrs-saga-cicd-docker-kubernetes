@@ -6,15 +6,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationTokenHdr implements ICommandHandler<AuthenticationTokenCmd> {
-    private AuthenticationToken authenticationToken;
+  private AuthenticationToken authenticationToken;
 
-    @Autowired
-    public AuthenticationTokenHdr(AuthenticationToken authenticationToken) {
-        this.authenticationToken = authenticationToken;
-    }
+  @Autowired
+  public AuthenticationTokenHdr(AuthenticationToken authenticationToken) {
+    this.authenticationToken = authenticationToken;
+  }
 
-    @Override
-    public void handle(AuthenticationTokenCmd command) {
-        authenticationToken.execute(command.email(), command.password());
-    }
+  @Override
+  public void handle(AuthenticationTokenCmd command) {
+    authenticationToken.execute(command.email(), command.password());
+  }
 }

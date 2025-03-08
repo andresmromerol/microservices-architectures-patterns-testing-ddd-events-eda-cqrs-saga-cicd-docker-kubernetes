@@ -17,30 +17,27 @@ import org.mockito.MockitoAnnotations;
 
 class UserUpdateTest {
 
-    @Mock
-    private IUserAuthPersistencePort userUpdatePort;
+  @Mock private IUserAuthPersistencePort userUpdatePort;
 
-    private UserUpdate userUpdate;
+  private UserUpdate userUpdate;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        userUpdate = new UserUpdate(userUpdatePort);
-    }
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+    userUpdate = new UserUpdate(userUpdatePort);
+  }
 
-    @Test
-    void shouldUpdateUser() {
-        UUID id = UUID.randomUUID();
-        String name = "andres";
-        String email = "andres@email.com";
-        String password = "123456789";
-        String phone = "3209118911";
-        Set<RoleEnum> roles = new HashSet<>();
-        roles.add(RoleEnum.USER);
-        UserStatusEnum status = UserStatusEnum.ACTIVE;
-
-        userUpdate.execute(id, name, email, password, phone, roles, status);
-
-        verify(userUpdatePort).update(any(UserModel.class));
-    }
+  @Test
+  void shouldUpdateUser() {
+    UUID id = UUID.randomUUID();
+    String name = "andres";
+    String email = "andres@email.com";
+    String password = "123456789";
+    String phone = "3209118911";
+    Set<RoleEnum> roles = new HashSet<>();
+    roles.add(RoleEnum.USER);
+    UserStatusEnum status = UserStatusEnum.ACTIVE;
+    userUpdate.execute(id, name, email, password, phone, roles, status);
+    verify(userUpdatePort).update(any(UserModel.class));
+  }
 }

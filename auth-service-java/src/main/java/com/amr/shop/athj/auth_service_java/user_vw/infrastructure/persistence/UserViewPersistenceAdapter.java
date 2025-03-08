@@ -13,20 +13,23 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserViewPersistenceAdapter implements IUserViewPersistencePort {
 
-    private final UserViewJpaRepository userViewJpaRepository;
-    private final UserViewPersistenceMapper userViewPersistenceMapper;
+  private final UserViewJpaRepository userViewJpaRepository;
+  private final UserViewPersistenceMapper userViewPersistenceMapper;
 
-    @Autowired
-    public UserViewPersistenceAdapter(
-            UserViewJpaRepository userViewJpaRepository, UserViewPersistenceMapper userViewPersistenceMapper) {
-        log.info("Initializing UserView persistence adapter");
-        this.userViewJpaRepository = userViewJpaRepository;
-        this.userViewPersistenceMapper = userViewPersistenceMapper;
-    }
+  @Autowired
+  public UserViewPersistenceAdapter(
+      UserViewJpaRepository userViewJpaRepository,
+      UserViewPersistenceMapper userViewPersistenceMapper) {
+    log.info("Initializing UserView persistence adapter");
+    this.userViewJpaRepository = userViewJpaRepository;
+    this.userViewPersistenceMapper = userViewPersistenceMapper;
+  }
 
-    @Override
-    public Optional<UserView> search(EmailVo email) {
-        log.info("Searching UserView by email: {}", email.getValue());
-        return userViewJpaRepository.findByEmail(email.getValue()).map(userViewPersistenceMapper::jpaToModel);
-    }
+  @Override
+  public Optional<UserView> search(EmailVo email) {
+    log.info("Searching UserView by email: {}", email.getValue());
+    return userViewJpaRepository
+        .findByEmail(email.getValue())
+        .map(userViewPersistenceMapper::jpaToModel);
+  }
 }

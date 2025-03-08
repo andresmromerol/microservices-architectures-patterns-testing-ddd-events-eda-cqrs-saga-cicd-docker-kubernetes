@@ -23,50 +23,43 @@ import org.springframework.http.ResponseEntity;
 
 class ChangePasswordAuthRestControllerTest {
 
-    @Mock
-    private ICommandBus commandBus;
+  @Mock private ICommandBus commandBus;
 
-    @Mock
-    private IQueryBus queryBus;
+  @Mock private IQueryBus queryBus;
 
-    @Mock
-    private IClaimPort claimPort;
+  @Mock private IClaimPort claimPort;
 
-    @Mock
-    private HttpServletRequest httpRequest;
+  @Mock private HttpServletRequest httpRequest;
 
-    private ChangePasswordAuthRestController controller;
+  private ChangePasswordAuthRestController controller;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        controller = new ChangePasswordAuthRestController(queryBus, commandBus, claimPort);
-    }
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+    controller = new ChangePasswordAuthRestController(queryBus, commandBus, claimPort);
+  }
 
-    @Test
-    void shouldChangePassword() {
-        String email = "andres@email.com";
-        String currentPassword = "currentPassword";
-        String newPassword = "newPassword";
-        String confirmationPassword = "newPassword";
-        String bearerToken = "Bearer token";
-        String token = "token";
-
-        ChangePasswordRequest request = ChangePasswordRequest.builder()
-                .currentPassword(currentPassword)
-                .newPassword(newPassword)
-                .confirmationPassword(confirmationPassword)
-                .build();
-
-        when(httpRequest.getHeader(AuthTitleEnum.AUTHORIZATION_HEADER.getValue()))
-                .thenReturn(bearerToken);
-        when(claimPort.extractUsername(token)).thenReturn(email);
-
-        ResponseEntity<?> response = controller.changePassword(request, httpRequest);
-
-        verify(claimPort).extractUsername(eq(token));
-        verify(commandBus).dispatch(any(AuthenticationTokenCmd.class));
-        verify(commandBus).dispatch(any(ChangePasswordCmd.class));
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
+  @Test
+  void shouldChangePassword() {
+    String email = "andres@email.com";
+    String currentPassword = "currentPassword";
+    String newPassword = "newPassword";
+    String confirmationPassword = "newPassword";
+    String bearerToken = "Bearer token";
+    String token = "token";
+    ChangePasswordRequest request =
+        ChangePasswordRequest.builder()
+            .currentPassword(currentPassword)
+            .newPassword(newPassword)
+            .confirmationPassword(confirmationPassword)
+            .build();
+    when(httpRequest.getHeader(AuthTitleEnum.AUTHORIZATION_HEADER.getValue()))
+        .thenReturn(bearerToken);
+    when(claimPort.extractUsername(token)).thenReturn(email);
+    ResponseEntity<?> response = controller.changePassword(request, httpRequest);
+    verify(claimPort).extractUsername(eq(token));
+    verify(commandBus).dispatch(any(AuthenticationTokenCmd.class));
+    verify(commandBus).dispatch(any(ChangePasswordCmd.class));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
 }

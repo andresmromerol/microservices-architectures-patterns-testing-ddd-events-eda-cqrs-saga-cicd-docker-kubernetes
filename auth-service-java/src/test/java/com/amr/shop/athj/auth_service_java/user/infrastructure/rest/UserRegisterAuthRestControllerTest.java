@@ -25,46 +25,44 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 class UserRegisterAuthRestControllerTest {
 
-    private static final UUID USER_ID = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
-    private static final String USER_NAME = "andres";
-    private static final String USER_EMAIL = "andres@email.com";
-    private static final String USER_PASSWORD = "123456789";
-    private static final String USER_PHONE = "3209118911";
-    private MockMvc mockMvc;
+  private static final UUID USER_ID = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
+  private static final String USER_NAME = "andres";
+  private static final String USER_EMAIL = "andres@email.com";
+  private static final String USER_PASSWORD = "123456789";
+  private static final String USER_PHONE = "3209118911";
+  private MockMvc mockMvc;
 
-    @Mock
-    private IQueryBus queryBus;
+  @Mock private IQueryBus queryBus;
 
-    @Mock
-    private ICommandBus commandBus;
+  @Mock private ICommandBus commandBus;
 
-    private ObjectMapper objectMapper;
-    private UserRegisterAuthRestController controller;
+  private ObjectMapper objectMapper;
+  private UserRegisterAuthRestController controller;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        controller = new UserRegisterAuthRestController(queryBus, commandBus);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller)
-                .setControllerAdvice(new ResponseEntityExceptionHandler() {})
-                .build();
-        objectMapper = new ObjectMapper();
-    }
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+    controller = new UserRegisterAuthRestController(queryBus, commandBus);
+    mockMvc =
+        MockMvcBuilders.standaloneSetup(controller)
+            .setControllerAdvice(new ResponseEntityExceptionHandler() {})
+            .build();
+    objectMapper = new ObjectMapper();
+  }
 
-    @Test
-    void shouldRegisterUserSuccessfully() throws Exception {
-        Set<UUID> roleUuids = new HashSet<>();
-        roleUuids.add(RoleEnum.USER.getId());
-
-        UserAuthRegisterRequest request = new UserAuthRegisterRequest();
-        request.setName(USER_NAME);
-        request.setEmail(USER_EMAIL);
-        request.setPassword(USER_PASSWORD);
-        request.setPhone(USER_PHONE);
-        request.setRoleUuids(roleUuids);
-
-        String requestJson = String.format(
-                """
+  @Test
+  void shouldRegisterUserSuccessfully() throws Exception {
+    Set<UUID> roleUuids = new HashSet<>();
+    roleUuids.add(RoleEnum.USER.getId());
+    UserAuthRegisterRequest request = new UserAuthRegisterRequest();
+    request.setName(USER_NAME);
+    request.setEmail(USER_EMAIL);
+    request.setPassword(USER_PASSWORD);
+    request.setPhone(USER_PHONE);
+    request.setRoleUuids(roleUuids);
+    String requestJson =
+        String.format(
+            """
                         {
                             "name": "%s",
                             "email": "%s",
@@ -73,28 +71,31 @@ class UserRegisterAuthRestControllerTest {
                             "role": ["%s"]
                         }
                         """,
-                USER_NAME, USER_EMAIL, USER_PASSWORD, USER_PHONE, RoleEnum.USER.getId());
+            USER_NAME, USER_EMAIL, USER_PASSWORD, USER_PHONE, RoleEnum.USER.getId());
+    mockMvc
+        .perform(
+            put("/api/v1/user/register/" + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+        .andExpect(status().isOk());
+    verify(commandBus).dispatch(any(UserAuthRegisterCmd.class));
+  }
 
-        mockMvc.perform(put("/api/v1/user/register/" + USER_ID)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
-                .andExpect(status().isOk());
+  @Test
+  void shouldReturnBadRequestWhenBodyIsInvalid() throws Exception {
+    mockMvc
+        .perform(
+            put("/api/v1/user/register/" + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("invalid json"))
+        .andExpect(status().isBadRequest());
+  }
 
-        verify(commandBus).dispatch(any(UserAuthRegisterCmd.class));
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenBodyIsInvalid() throws Exception {
-        mockMvc.perform(put("/api/v1/user/register/" + USER_ID)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("invalid json"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenIdIsInvalid() throws Exception {
-        String requestJson = String.format(
-                """
+  @Test
+  void shouldReturnBadRequestWhenIdIsInvalid() throws Exception {
+    String requestJson =
+        String.format(
+            """
                         {
                             "name": "%s",
                             "email": "%s",
@@ -103,11 +104,12 @@ class UserRegisterAuthRestControllerTest {
                             "role": ["%s"]
                         }
                         """,
-                USER_NAME, USER_EMAIL, USER_PASSWORD, USER_PHONE, RoleEnum.USER.getId());
-
-        mockMvc.perform(put("/api/v1/user/register/invalid-uuid")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
-                .andExpect(status().isBadRequest());
-    }
+            USER_NAME, USER_EMAIL, USER_PASSWORD, USER_PHONE, RoleEnum.USER.getId());
+    mockMvc
+        .perform(
+            put("/api/v1/user/register/invalid-uuid")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+        .andExpect(status().isBadRequest());
+  }
 }

@@ -24,134 +24,129 @@ import org.mockito.MockitoAnnotations;
 
 class UserAuthRegisterTest {
 
-    @Mock
-    private IUserAuthPersistencePort userAuthPersistencePort;
+  @Mock private IUserAuthPersistencePort userAuthPersistencePort;
 
-    @Mock
-    private IQueryBus queryBus;
+  @Mock private IQueryBus queryBus;
 
-    private UserAuthRegister userAuthRegister;
+  private UserAuthRegister userAuthRegister;
 
-    private final UUID userId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
-    private final String userName = "andres";
-    private final String userEmail = "andres@email.com";
-    private final String userPassword = "123456789";
-    private final String userPhone = "3209118911";
-    private final Set<RoleEnum> userRoles = new HashSet<>(Set.of(RoleEnum.USER));
+  private final UUID userId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
+  private final String userName = "andres";
+  private final String userEmail = "andres@email.com";
+  private final String userPassword = "123456789";
+  private final String userPhone = "3209118911";
+  private final Set<RoleEnum> userRoles = new HashSet<>(Set.of(RoleEnum.USER));
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        userAuthRegister = new UserAuthRegister(userAuthPersistencePort, queryBus);
-    }
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+    userAuthRegister = new UserAuthRegister(userAuthPersistencePort, queryBus);
+  }
 
-    @Test
-    void shouldRegisterUserSuccessfully() {
-        UserSearchByEmailRes emptyEmailResponse = UserSearchByEmailRes.builder()
-                .id(null)
-                .name(null)
-                .email(null)
-                .password(null)
-                .phone(null)
-                .roles(null)
-                .permissions(null)
-                .isEmpty(true)
-                .build();
+  @Test
+  void shouldRegisterUserSuccessfully() {
+    UserSearchByEmailRes emptyEmailResponse =
+        UserSearchByEmailRes.builder()
+            .id(null)
+            .name(null)
+            .email(null)
+            .password(null)
+            .phone(null)
+            .roles(null)
+            .permissions(null)
+            .isEmpty(true)
+            .build();
+    when(queryBus.ask(any(UserSearchByEmailQry.class))).thenReturn(emptyEmailResponse);
+    when(queryBus.ask(any(EncryptPasswordQry.class)))
+        .thenReturn(new EncryptPasswordRes("123456789"));
+    userAuthRegister.execute(userId, userName, userEmail, userPassword, userPhone, userRoles);
+    ArgumentCaptor<UserModel> userCaptor = ArgumentCaptor.forClass(UserModel.class);
+    verify(userAuthPersistencePort).save(userCaptor.capture());
+    UserModel savedUser = userCaptor.getValue();
+    assertEquals(userId, savedUser.getId().getValue());
+    assertEquals(userName, savedUser.getName().getValue());
+    assertEquals(userEmail, savedUser.getEmail().getValue());
+    assertEquals("123456789", savedUser.getPassword().getValue());
+    assertEquals(userPhone, savedUser.getPhone().getValue());
+    assertEquals(userRoles, savedUser.getRoles());
+  }
 
-        when(queryBus.ask(any(UserSearchByEmailQry.class))).thenReturn(emptyEmailResponse);
-        when(queryBus.ask(any(EncryptPasswordQry.class))).thenReturn(new EncryptPasswordRes("123456789"));
+  @Test
+  void shouldThrowExceptionWhenEmailExists() {
+    UserSearchByEmailRes existingUserResponse =
+        UserSearchByEmailRes.builder()
+            .id(UUID.randomUUID())
+            .name("andres")
+            .email(userEmail)
+            .password("123456789")
+            .phone("3209118911")
+            .roles(Set.of(RoleEnum.USER))
+            .permissions(Set.of())
+            .isEmpty(false)
+            .build();
+    UserAuthEmailAlreadyExistsException userAuthEmailAlreadyExistsException =
+        new UserAuthEmailAlreadyExistsException(userEmail);
+    when(queryBus.ask(any(UserSearchByEmailQry.class))).thenReturn(existingUserResponse);
+    UserAuthEmailAlreadyExistsException exception =
+        assertThrows(
+            UserAuthEmailAlreadyExistsException.class,
+            () ->
+                userAuthRegister.execute(
+                    userId, userName, userEmail, userPassword, userPhone, userRoles));
+    assertEquals(userAuthEmailAlreadyExistsException.getMessage(), exception.getMessage());
+    verify(userAuthPersistencePort, never()).save(any());
+  }
 
-        userAuthRegister.execute(userId, userName, userEmail, userPassword, userPhone, userRoles);
+  @Test
+  void shouldEncryptPasswordCorrectly() {
+    UserSearchByEmailRes emptyEmailResponse =
+        UserSearchByEmailRes.builder()
+            .id(null)
+            .name(null)
+            .email(null)
+            .password(null)
+            .phone(null)
+            .roles(null)
+            .permissions(null)
+            .isEmpty(true)
+            .build();
+    when(queryBus.ask(any(UserSearchByEmailQry.class))).thenReturn(emptyEmailResponse);
+    when(queryBus.ask(any(EncryptPasswordQry.class)))
+        .thenReturn(new EncryptPasswordRes("123456789"));
+    userAuthRegister.execute(userId, userName, userEmail, userPassword, userPhone, userRoles);
+    ArgumentCaptor<EncryptPasswordQry> encryptCaptor =
+        ArgumentCaptor.forClass(EncryptPasswordQry.class);
+    verify(queryBus).ask(encryptCaptor.capture());
+    assertEquals(userPassword, encryptCaptor.getValue().password());
+    ArgumentCaptor<UserModel> userCaptor = ArgumentCaptor.forClass(UserModel.class);
+    verify(userAuthPersistencePort).save(userCaptor.capture());
+    assertEquals("123456789", userCaptor.getValue().getPassword().getValue());
+  }
 
-        ArgumentCaptor<UserModel> userCaptor = ArgumentCaptor.forClass(UserModel.class);
-        verify(userAuthPersistencePort).save(userCaptor.capture());
-
-        UserModel savedUser = userCaptor.getValue();
-        assertEquals(userId, savedUser.getId().getValue());
-        assertEquals(userName, savedUser.getName().getValue());
-        assertEquals(userEmail, savedUser.getEmail().getValue());
-        assertEquals("123456789", savedUser.getPassword().getValue());
-        assertEquals(userPhone, savedUser.getPhone().getValue());
-        assertEquals(userRoles, savedUser.getRoles());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenEmailExists() {
-        UserSearchByEmailRes existingUserResponse = UserSearchByEmailRes.builder()
-                .id(UUID.randomUUID())
-                .name("andres")
-                .email(userEmail)
-                .password("123456789")
-                .phone("3209118911")
-                .roles(Set.of(RoleEnum.USER))
-                .permissions(Set.of())
-                .isEmpty(false)
-                .build();
-        UserAuthEmailAlreadyExistsException userAuthEmailAlreadyExistsException =
-                new UserAuthEmailAlreadyExistsException(userEmail);
-
-        when(queryBus.ask(any(UserSearchByEmailQry.class))).thenReturn(existingUserResponse);
-
-        UserAuthEmailAlreadyExistsException exception = assertThrows(
-                UserAuthEmailAlreadyExistsException.class,
-                () -> userAuthRegister.execute(userId, userName, userEmail, userPassword, userPhone, userRoles));
-
-        assertEquals(userAuthEmailAlreadyExistsException.getMessage(), exception.getMessage());
-        verify(userAuthPersistencePort, never()).save(any());
-    }
-
-    @Test
-    void shouldEncryptPasswordCorrectly() {
-        UserSearchByEmailRes emptyEmailResponse = UserSearchByEmailRes.builder()
-                .id(null)
-                .name(null)
-                .email(null)
-                .password(null)
-                .phone(null)
-                .roles(null)
-                .permissions(null)
-                .isEmpty(true)
-                .build();
-
-        when(queryBus.ask(any(UserSearchByEmailQry.class))).thenReturn(emptyEmailResponse);
-        when(queryBus.ask(any(EncryptPasswordQry.class))).thenReturn(new EncryptPasswordRes("123456789"));
-
-        userAuthRegister.execute(userId, userName, userEmail, userPassword, userPhone, userRoles);
-
-        ArgumentCaptor<EncryptPasswordQry> encryptCaptor = ArgumentCaptor.forClass(EncryptPasswordQry.class);
-        verify(queryBus).ask(encryptCaptor.capture());
-        assertEquals(userPassword, encryptCaptor.getValue().password());
-
-        ArgumentCaptor<UserModel> userCaptor = ArgumentCaptor.forClass(UserModel.class);
-        verify(userAuthPersistencePort).save(userCaptor.capture());
-        assertEquals("123456789", userCaptor.getValue().getPassword().getValue());
-    }
-
-    @Test
-    void shouldVerifyEmailBeforeRegistering() {
-        UserSearchByEmailRes emptyEmailResponse = UserSearchByEmailRes.builder()
-                .id(null)
-                .name(null)
-                .email(null)
-                .password(null)
-                .phone(null)
-                .roles(null)
-                .permissions(null)
-                .isEmpty(true)
-                .build();
-
-        when(queryBus.ask(any(UserSearchByEmailQry.class))).thenReturn(emptyEmailResponse);
-        when(queryBus.ask(any(EncryptPasswordQry.class))).thenReturn(new EncryptPasswordRes("123456789"));
-
-        userAuthRegister.execute(userId, userName, userEmail, userPassword, userPhone, userRoles);
-
-        ArgumentCaptor<UserSearchByEmailQry> emailCaptor = ArgumentCaptor.forClass(UserSearchByEmailQry.class);
-        verify(queryBus).ask(emailCaptor.capture());
-        assertEquals(userEmail, emailCaptor.getValue().email());
-
-        InOrder inOrder = inOrder(queryBus, userAuthPersistencePort);
-        inOrder.verify(queryBus).ask(any(UserSearchByEmailQry.class));
-        inOrder.verify(queryBus).ask(any(EncryptPasswordQry.class));
-        inOrder.verify(userAuthPersistencePort).save(any(UserModel.class));
-    }
+  @Test
+  void shouldVerifyEmailBeforeRegistering() {
+    UserSearchByEmailRes emptyEmailResponse =
+        UserSearchByEmailRes.builder()
+            .id(null)
+            .name(null)
+            .email(null)
+            .password(null)
+            .phone(null)
+            .roles(null)
+            .permissions(null)
+            .isEmpty(true)
+            .build();
+    when(queryBus.ask(any(UserSearchByEmailQry.class))).thenReturn(emptyEmailResponse);
+    when(queryBus.ask(any(EncryptPasswordQry.class)))
+        .thenReturn(new EncryptPasswordRes("123456789"));
+    userAuthRegister.execute(userId, userName, userEmail, userPassword, userPhone, userRoles);
+    ArgumentCaptor<UserSearchByEmailQry> emailCaptor =
+        ArgumentCaptor.forClass(UserSearchByEmailQry.class);
+    verify(queryBus).ask(emailCaptor.capture());
+    assertEquals(userEmail, emailCaptor.getValue().email());
+    InOrder inOrder = inOrder(queryBus, userAuthPersistencePort);
+    inOrder.verify(queryBus).ask(any(UserSearchByEmailQry.class));
+    inOrder.verify(queryBus).ask(any(EncryptPasswordQry.class));
+    inOrder.verify(userAuthPersistencePort).save(any(UserModel.class));
+  }
 }

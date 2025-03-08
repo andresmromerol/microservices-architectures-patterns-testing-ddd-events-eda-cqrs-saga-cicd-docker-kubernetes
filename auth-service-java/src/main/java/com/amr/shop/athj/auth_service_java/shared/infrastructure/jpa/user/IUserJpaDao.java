@@ -4,5 +4,5 @@ import java.util.UUID;
 
 public interface IUserJpaDao {
 
-    UserJpa getReferenceToUser(UUID userId);
+  UserJpa getReferenceToUser(UUID userId);
 }

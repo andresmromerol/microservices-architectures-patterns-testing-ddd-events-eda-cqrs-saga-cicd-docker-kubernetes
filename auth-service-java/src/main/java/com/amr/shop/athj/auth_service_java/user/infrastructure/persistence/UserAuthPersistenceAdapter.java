@@ -13,36 +13,35 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserAuthPersistenceAdapter implements IUserAuthPersistencePort {
 
-    private final UserJpaRepository userJpaRepository;
-    private final UserPersistenceMapper userPersistenceMapper;
+  private final UserJpaRepository userJpaRepository;
+  private final UserPersistenceMapper userPersistenceMapper;
 
-    @Autowired
-    public UserAuthPersistenceAdapter(
-            UserJpaRepository userJpaRepository, UserPersistenceMapper userPersistenceMapper) {
-        this.userJpaRepository = userJpaRepository;
-        this.userPersistenceMapper = userPersistenceMapper;
-    }
+  @Autowired
+  public UserAuthPersistenceAdapter(
+      UserJpaRepository userJpaRepository, UserPersistenceMapper userPersistenceMapper) {
+    this.userJpaRepository = userJpaRepository;
+    this.userPersistenceMapper = userPersistenceMapper;
+  }
 
-    @Override
-    public void save(UserModel userModel) {
-        log.info("Starting saving user with id: {}", userModel.getId().getValue());
-        userJpaRepository.save(userPersistenceMapper.modelToJpa(userModel));
-        log.info("User saved successfully with id: {}", userModel.getId().getValue());
-    }
+  @Override
+  public void save(UserModel userModel) {
+    log.info("Starting saving user with id: {}", userModel.getId().getValue());
+    userJpaRepository.save(userPersistenceMapper.modelToJpa(userModel));
+    log.info("User saved successfully with id: {}", userModel.getId().getValue());
+  }
 
-    @Override
-    public void update(UserModel userModel) {
-        UserJpa user = userJpaRepository
-                .findByEmail(userModel.getEmail().getValue())
-                .orElseThrow(() ->
-                        new UserAuthUserNotFoundException(userModel.getEmail().getValue()));
-
-        user.setName(userModel.getName().getValue());
-        user.setEmail(userModel.getEmail().getValue());
-        user.setPhone(userModel.getPhone().getValue());
-        user.setPassword(userModel.getPassword().getValue());
-        user.setRoles(userModel.getRoles());
-        user.setStatus(userModel.getStatus().getValue());
-        userJpaRepository.save(user);
-    }
+  @Override
+  public void update(UserModel userModel) {
+    UserJpa user =
+        userJpaRepository
+            .findByEmail(userModel.getEmail().getValue())
+            .orElseThrow(() -> new UserAuthUserNotFoundException(userModel.getEmail().getValue()));
+    user.setName(userModel.getName().getValue());
+    user.setEmail(userModel.getEmail().getValue());
+    user.setPhone(userModel.getPhone().getValue());
+    user.setPassword(userModel.getPassword().getValue());
+    user.setRoles(userModel.getRoles());
+    user.setStatus(userModel.getStatus().getValue());
+    userJpaRepository.save(user);
+  }
 }

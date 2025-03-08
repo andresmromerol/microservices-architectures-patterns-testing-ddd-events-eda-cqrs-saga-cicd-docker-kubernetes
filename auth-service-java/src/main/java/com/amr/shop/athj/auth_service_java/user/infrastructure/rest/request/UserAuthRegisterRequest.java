@@ -19,26 +19,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserAuthRegisterRequest {
-    @NotBlank(message = "The name is required")
-    @Size(min = 3, max = 50, message = "The name must have between 3 and 50 characters")
-    private String name;
+  @NotBlank(message = "The name is required")
+  @Size(min = 3, max = 50, message = "The name must have between 3 and 50 characters")
+  private String name;
 
-    @NotBlank(message = "The email is required")
-    @Email(message = "The email format is invalid")
-    private String email;
+  @NotBlank(message = "The email is required")
+  @Email(message = "The email format is invalid")
+  private String email;
 
-    @NotBlank(message = "The phone number is required")
-    @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$", message = "The phone number format is invalid")
-    private String phone;
+  @NotBlank(message = "The phone number is required")
+  @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$", message = "The phone number format is invalid")
+  private String phone;
 
-    @NotBlank(message = "The password is required")
-    @Size(min = 8, message = "The password must have at least 8 characters")
-    private String password;
+  @NotBlank(message = "The password is required")
+  @Size(min = 8, message = "The password must have at least 8 characters")
+  private String password;
 
-    @JsonProperty("role")
-    private Set<UUID> roleUuids = new HashSet<>();
+  @JsonProperty("role")
+  private Set<UUID> roleUuids = new HashSet<>();
 
-    public Set<RoleEnum> getRoles() {
-        return RoleEnum.fromUUIDs(roleUuids);
-    }
+  public Set<RoleEnum> getRoles() {
+    return RoleEnum.fromUUIDs(roleUuids);
+  }
 }

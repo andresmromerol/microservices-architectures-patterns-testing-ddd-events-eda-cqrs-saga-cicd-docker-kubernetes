@@ -5,16 +5,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserSearchByEmailHdr implements IQueryHandler<UserSearchByEmailQry, UserSearchByEmailRes> {
-    private final UserSearchByEmail userSearchByEmail;
+public class UserSearchByEmailHdr
+    implements IQueryHandler<UserSearchByEmailQry, UserSearchByEmailRes> {
+  private final UserSearchByEmail userSearchByEmail;
 
-    @Autowired
-    public UserSearchByEmailHdr(UserSearchByEmail userSearchByEmail) {
-        this.userSearchByEmail = userSearchByEmail;
-    }
+  @Autowired
+  public UserSearchByEmailHdr(UserSearchByEmail userSearchByEmail) {
+    this.userSearchByEmail = userSearchByEmail;
+  }
 
-    @Override
-    public UserSearchByEmailRes handle(UserSearchByEmailQry query) {
-        return userSearchByEmail.execute(query.email());
-    }
+  @Override
+  public UserSearchByEmailRes handle(UserSearchByEmailQry query) {
+    return userSearchByEmail.execute(query.email());
+  }
 }

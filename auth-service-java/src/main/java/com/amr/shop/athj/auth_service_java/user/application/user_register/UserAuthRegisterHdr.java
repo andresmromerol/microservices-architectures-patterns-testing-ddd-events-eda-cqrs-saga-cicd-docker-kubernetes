@@ -6,16 +6,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserAuthRegisterHdr implements ICommandHandler<UserAuthRegisterCmd> {
-    private final UserAuthRegister userAuthRegister;
+  private final UserAuthRegister userAuthRegister;
 
-    @Autowired
-    public UserAuthRegisterHdr(UserAuthRegister userAuthRegister) {
-        this.userAuthRegister = userAuthRegister;
-    }
+  @Autowired
+  public UserAuthRegisterHdr(UserAuthRegister userAuthRegister) {
+    this.userAuthRegister = userAuthRegister;
+  }
 
-    @Override
-    public void handle(UserAuthRegisterCmd command) {
-        userAuthRegister.execute(
-                command.id(), command.name(), command.email(), command.password(), command.phone(), command.roles());
-    }
+  @Override
+  public void handle(UserAuthRegisterCmd command) {
+    userAuthRegister.execute(
+        command.id(),
+        command.name(),
+        command.email(),
+        command.password(),
+        command.phone(),
+        command.roles());
+  }
 }

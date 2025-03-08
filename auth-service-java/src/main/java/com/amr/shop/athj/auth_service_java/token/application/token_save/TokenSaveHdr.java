@@ -7,15 +7,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenSaveHdr implements ICommandHandler<TokenSaveCmd> {
 
-    private final TokenSave tokenSave;
+  private final TokenSave tokenSave;
 
-    @Autowired
-    public TokenSaveHdr(TokenSave tokenSave) {
-        this.tokenSave = tokenSave;
-    }
+  @Autowired
+  public TokenSaveHdr(TokenSave tokenSave) {
+    this.tokenSave = tokenSave;
+  }
 
-    @Override
-    public void handle(TokenSaveCmd command) {
-        tokenSave.execute(command.userId(), command.token());
-    }
+  @Override
+  public void handle(TokenSaveCmd command) {
+    tokenSave.execute(command.userId(), command.token());
+  }
 }

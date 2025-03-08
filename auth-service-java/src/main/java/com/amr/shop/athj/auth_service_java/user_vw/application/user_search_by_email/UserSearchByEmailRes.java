@@ -9,12 +9,12 @@ import lombok.Builder;
 
 @Builder
 public record UserSearchByEmailRes(
-        UUID id,
-        String name,
-        String email,
-        String password,
-        String phone,
-        Set<RoleEnum> roles,
-        Set<PermissionEnum> permissions,
-        boolean isEmpty)
-        implements IResponse {}
+    UUID id,
+    String name,
+    String email,
+    String password,
+    String phone,
+    Set<RoleEnum> roles,
+    Set<PermissionEnum> permissions,
+    boolean isEmpty)
+    implements IResponse {}

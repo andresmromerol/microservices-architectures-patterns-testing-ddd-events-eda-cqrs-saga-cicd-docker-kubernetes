@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class AuthServiceJavaApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(AuthServiceJavaApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(AuthServiceJavaApplication.class, args);
+  }
 }

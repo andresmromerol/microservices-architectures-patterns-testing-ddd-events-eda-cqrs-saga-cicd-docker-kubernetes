@@ -9,22 +9,22 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class EncryptPassword {
 
-    private final IPasswordPort passwordPort;
+  private final IPasswordPort passwordPort;
 
-    @Autowired
-    public EncryptPassword(IPasswordPort passwordPort) {
-        this.passwordPort = passwordPort;
-    }
+  @Autowired
+  public EncryptPassword(IPasswordPort passwordPort) {
+    this.passwordPort = passwordPort;
+  }
 
-    public EncryptPasswordRes execute(String password) {
-        log.debug("Encrypting password: {}", password);
-        final String encodedPassword = passwordPort.encode(password);
-        log.debug("Password encrypted: {}", encodedPassword);
-        return response(encodedPassword);
-    }
+  public EncryptPasswordRes execute(String password) {
+    log.debug("Encrypting password: {}", password);
+    final String encodedPassword = passwordPort.encode(password);
+    log.debug("Password encrypted: {}", encodedPassword);
+    return response(encodedPassword);
+  }
 
-    private EncryptPasswordRes response(String encode) {
-        log.debug("Returning encrypted password: {}", encode);
-        return new EncryptPasswordRes(encode);
-    }
+  private EncryptPasswordRes response(String encode) {
+    log.debug("Returning encrypted password: {}", encode);
+    return new EncryptPasswordRes(encode);
+  }
 }

@@ -11,21 +11,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserViewPersistenceMapper {
 
-    private static Set<PermissionEnum> getPermissions(UserJpa userJpa) {
-        return userJpa.getRoles().stream()
-                .flatMap(role -> Stream.of(role.getPermissions()))
-                .collect(Collectors.toSet());
-    }
+  private static Set<PermissionEnum> getPermissions(UserJpa userJpa) {
+    return userJpa.getRoles().stream()
+        .flatMap(role -> Stream.of(role.getPermissions()))
+        .collect(Collectors.toSet());
+  }
 
-    public UserView jpaToModel(UserJpa userJpa) {
-
-        return new UserView(
-                userJpa.getId(),
-                userJpa.getName(),
-                userJpa.getEmail(),
-                userJpa.getPassword(),
-                userJpa.getPhone(),
-                userJpa.getRoles(),
-                getPermissions(userJpa));
-    }
+  public UserView jpaToModel(UserJpa userJpa) {
+    return new UserView(
+        userJpa.getId(),
+        userJpa.getName(),
+        userJpa.getEmail(),
+        userJpa.getPassword(),
+        userJpa.getPhone(),
+        userJpa.getRoles(),
+        getPermissions(userJpa));
+  }
 }

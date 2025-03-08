@@ -7,15 +7,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenRevokeHdr implements ICommandHandler<TokenRevokeCmd> {
 
-    private final TokenRevoke tokenRevoke;
+  private final TokenRevoke tokenRevoke;
 
-    @Autowired
-    public TokenRevokeHdr(TokenRevoke tokenRevoke) {
-        this.tokenRevoke = tokenRevoke;
-    }
+  @Autowired
+  public TokenRevokeHdr(TokenRevoke tokenRevoke) {
+    this.tokenRevoke = tokenRevoke;
+  }
 
-    @Override
-    public void handle(TokenRevokeCmd c) {
-        tokenRevoke.execute(c.userId());
-    }
+  @Override
+  public void handle(TokenRevokeCmd c) {
+    tokenRevoke.execute(c.userId());
+  }
 }

@@ -13,24 +13,24 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class UserUpdate {
-    private final IUserAuthPersistencePort userUpdatePort;
+  private final IUserAuthPersistencePort userUpdatePort;
 
-    @Autowired
-    public UserUpdate(IUserAuthPersistencePort userUpdatePort) {
-        this.userUpdatePort = userUpdatePort;
-    }
+  @Autowired
+  public UserUpdate(IUserAuthPersistencePort userUpdatePort) {
+    this.userUpdatePort = userUpdatePort;
+  }
 
-    public void execute(
-            UUID id,
-            String name,
-            String email,
-            String password,
-            String phone,
-            Set<RoleEnum> roles,
-            UserStatusEnum status) {
-        log.info("Starting user update for user with id: {}", id);
-        UserModel user = UserModel.create(id, name, email, password, status, phone, roles);
-        userUpdatePort.update(user);
-        log.info("User updated successfully with id: {}", id);
-    }
+  public void execute(
+      UUID id,
+      String name,
+      String email,
+      String password,
+      String phone,
+      Set<RoleEnum> roles,
+      UserStatusEnum status) {
+    log.info("Starting user update for user with id: {}", id);
+    UserModel user = UserModel.create(id, name, email, password, status, phone, roles);
+    userUpdatePort.update(user);
+    log.info("User updated successfully with id: {}", id);
+  }
 }

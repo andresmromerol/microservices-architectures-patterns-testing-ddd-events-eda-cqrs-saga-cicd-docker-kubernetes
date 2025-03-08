@@ -6,22 +6,22 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserUpdateHdr implements ICommandHandler<UserUpdateCmd> {
-    private final UserUpdate userUpdate;
+  private final UserUpdate userUpdate;
 
-    @Autowired
-    public UserUpdateHdr(UserUpdate userUpdate) {
-        this.userUpdate = userUpdate;
-    }
+  @Autowired
+  public UserUpdateHdr(UserUpdate userUpdate) {
+    this.userUpdate = userUpdate;
+  }
 
-    @Override
-    public void handle(UserUpdateCmd command) {
-        userUpdate.execute(
-                command.id(),
-                command.name(),
-                command.email(),
-                command.password(),
-                command.phone(),
-                command.roles(),
-                command.status());
-    }
+  @Override
+  public void handle(UserUpdateCmd command) {
+    userUpdate.execute(
+        command.id(),
+        command.name(),
+        command.email(),
+        command.password(),
+        command.phone(),
+        command.roles(),
+        command.status());
+  }
 }

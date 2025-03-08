@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class AuthStatusHealthCheckController {
 
-    @GetMapping
-    public ResponseEntity<HashMap<String, String>> healthCheck() {
-
-        HashMap<String, String> status = new HashMap<>();
-        status.put("bounded_context", "auth-service-java");
-        status.put("status", "ok");
-        return new ResponseEntity<>(status, HttpStatus.OK);
-    }
+  @GetMapping
+  public ResponseEntity<HashMap<String, String>> healthCheck() {
+    HashMap<String, String> status = new HashMap<>();
+    status.put("bounded_context", "auth-service-java");
+    status.put("status", "ok");
+    return new ResponseEntity<>(status, HttpStatus.OK);
+  }
 }

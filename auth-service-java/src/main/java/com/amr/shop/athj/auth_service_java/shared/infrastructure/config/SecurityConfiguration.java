@@ -19,25 +19,26 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfiguration {
 
-    private static final String[] WHITE_LIST_URL = {"/api/v1/**"};
+  private static final String[] WHITE_LIST_URL = {"/api/v1/**"};
 
-    private final AuthenticationProvider authenticationProvider;
-    private final Logout logoutHandler;
+  private final AuthenticationProvider authenticationProvider;
+  private final Logout logoutHandler;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req -> req.requestMatchers(WHITE_LIST_URL)
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
-                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .logout(logout -> logout.logoutUrl("/api/v1/user/logout")
-                        .addLogoutHandler(logoutHandler)
-                        .logoutSuccessHandler(
-                                (request, response, authentication) -> SecurityContextHolder.clearContext()));
-
-        return http.build();
-    }
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http.csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(
+            req -> req.requestMatchers(WHITE_LIST_URL).permitAll().anyRequest().authenticated())
+        .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+        .authenticationProvider(authenticationProvider)
+        .logout(
+            logout ->
+                logout
+                    .logoutUrl("/api/v1/user/logout")
+                    .addLogoutHandler(logoutHandler)
+                    .logoutSuccessHandler(
+                        (request, response, authentication) ->
+                            SecurityContextHolder.clearContext()));
+    return http.build();
+  }
 }
