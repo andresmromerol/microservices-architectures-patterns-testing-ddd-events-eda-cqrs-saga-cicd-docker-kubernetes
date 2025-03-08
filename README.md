@@ -7,6 +7,22 @@
 
 # 🔷 Branches
 
+##  🌵 8-feat/gateway-authorization-routes-and-header-config
+
+<div align="center">
+
+### [View auth-refresh-token-endpoint-diagram.plantuml](./uml/auth-refresh-token-endpoint-diagram.plantuml)
+<img src="./diagrams/8-feat-gateway-authorization-routes-and-header-config-01.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<img src="./diagrams/8-feat-gateway-authorization-routes-and-header-config-02.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<img src="./diagrams/8-feat-gateway-authorization-routes-and-header-config-03.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+</div>
+
+<div align="left">
+⚡️Add exceptions: GatewayException, GatewayForbiddenAccessException, GatewayTokenExpiredException, GatewayTokenInvalidException, and GatewayTokenMissingException.<br>
+⚡️Configure authentication and authorization for the routes in the microservices system.<br>
+</div>
+
+
 ##  🌵 7-feat/add-refresh-token-auth
 
 <div align="center">
@@ -18,7 +34,6 @@
 </div>
 
 <div align="left">
-⚡️Add commands: ChangePassword and UserUpdate.<br>
 ⚡️Add command: ValidateToken.<br>
 ⚡️Add POST athj_refresh_token to postman_collection.<br>
 ⚡️Add exception: UserAuthTokenExpiredException.<br>
@@ -35,11 +50,11 @@
 
 <div align="left">
 ⚡️Add commands: ChangePassword and UserUpdate.<br>
-⚡️Add custom Logout handler extending LogoutHandler.
-⚡️Add POST athj_logout endpoint to postman_collection.
-⚡️Update SecurityConfiguration.
-⚡️Update TokenJpaRepository.
-⚡️Add UML class diagram: auth-logout-diagram.
+⚡️Add custom Logout handler extending LogoutHandler.<br>
+⚡️Add POST athj_logout endpoint to postman_collection.<br>
+⚡️Update SecurityConfiguration.<br>
+⚡️Update TokenJpaRepository.<br>
+⚡️Add UML class diagram: auth-logout-diagram.<br>
 </div>
 
 ##  🌵 5-feat/add-change-password-auth

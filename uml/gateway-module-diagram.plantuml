@@ -1,0 +1,153 @@
+@startuml Gateway Module Diagram
+
+title Gateway Module Diagram
+
+skinparam backgroundColor white
+skinparam style strictuml
+skinparam componentStyle uml2
+
+skinparam package {
+    BackgroundColor<<Domain>> LightYellow
+    BackgroundColor<<Application>> LightSalmon
+    BackgroundColor<<Infrastructure>> LightGreen
+    BackgroundColor<<Security>> #E0E0FF
+    BackgroundColor<<Filter>> #FFE0E0
+    BackgroundColor<<Exception>> #FFFFC0
+    BackgroundColor<<Utility>> #E0FFE0
+    BackgroundColor<<Core>> #F0F0F0
+}
+
+package "Gateway" <<Core>> {
+    class GatewayApplication {
+        + main(args: String[])
+        + gatewayExceptionHandler(): ErrorWebExceptionHandler
+    }
+
+    package "Security" <<Security>> {
+        class SecurityConfiguration {
+            - jwtAuthConverter: JwtAuthConverter
+            + securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain
+            + configure(http: ServerHttpSecurity): SecurityWebFilterChain
+        }
+
+        class JwtAuthConverter {
+            - jwtUtil: JwtUtil
+            + convert(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void>
+            + extractJwtToken(request: ServerHttpRequest): String
+            + validateToken(token: String): Mono<Authentication>
+        }
+
+        class JwtConfiguration {
+            - secretKey: String
+            - jwtUtil: JwtUtil
+            + jwtDecoder(): ReactiveJwtDecoder
+            + tokenValidator(): OAuth2TokenValidator<Jwt>
+        }
+
+        class JwtUtil {
+            - secretKey: String
+            + extractAllClaims(token: String): Claims
+            + extractUsername(token: String): String
+            + extractRoles(token: String): List<String>
+            + validateToken(token: String): boolean
+            + getSigningKey(): Key
+        }
+    }
+
+    package "Filter" <<Filter>> {
+        class AuthenticationFilter {
+            - jwtAuthConverter: JwtAuthConverter
+            + filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void>
+            + extractJwtFromRequest(request: ServerHttpRequest): String
+        }
+
+        class CorrelationFilter {
+            + filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void>
+            + generateCorrelationId(): String
+        }
+
+        class CorrelationUtility {
+            + {static} CORRELATION_ID_HEADER: String
+            + {static} getCorrelationId(): String
+            + {static} setCorrelationId(correlationId: String): void
+        }
+    }
+
+    package "Exception" <<Exception>> {
+        class GatewayException {
+            + message: String
+            + cause: Throwable
+            + GatewayException(message: String)
+            + GatewayException(message: String, cause: Throwable)
+        }
+
+        class GatewayExceptionHdr {
+            - objectMapper: ObjectMapper
+            + handle(exchange: ServerWebExchange, ex: Throwable): Mono<Void>
+            - getDataBuffer(bufferFactory: DataBufferFactory, exceptionDTO: ExceptionDTO): DataBuffer
+            - buildExceptionDTO(status: HttpStatus, businessCode: String, message: String): ExceptionDTO
+            - buildExceptionDTO(status: HttpStatus, businessCode: String, messages: List<String>): ExceptionDTO
+        }
+
+        class GatewayTokenExpiredException {
+            + GatewayTokenExpiredException(message: String)
+            + GatewayTokenExpiredException(message: String, cause: Throwable)
+        }
+
+        class GatewayTokenInvalidException {
+            + GatewayTokenInvalidException(message: String)
+            + GatewayTokenInvalidException(message: String, cause: Throwable)
+        }
+
+        class GatewayTokenMissingException {
+            + GatewayTokenMissingException(message: String)
+            + GatewayTokenMissingException(message: String, cause: Throwable)
+        }
+
+        class GatewayForbiddenAccessException {
+            + GatewayForbiddenAccessException(message: String)
+            + GatewayForbiddenAccessException(message: String, cause: Throwable)
+        }
+
+        class ExceptionDTO {
+            - code: int
+            - businessCode: String
+            - messages: List<String>
+            + ExceptionDTO(code: int, businessCode: String, messages: List<String>)
+        }
+
+        class GatewayBusinessCode {
+            + {static} GATEWAY_ERROR: String
+            + {static} VALIDATION_ERROR: String
+            + {static} UNAUTHORIZED_ERROR: String
+            + {static} TOKEN_EXPIRED: String
+            + {static} TOKEN_INVALID: String
+            + {static} TOKEN_MISSING: String
+            + {static} FORBIDDEN_ACCESS: String
+        }
+    }
+}
+
+GatewayApplication --> GatewayExceptionHdr: registers
+
+SecurityConfiguration --> JwtAuthConverter: uses
+JwtAuthConverter --> JwtUtil: uses
+JwtConfiguration --> JwtUtil: uses
+
+AuthenticationFilter --> JwtAuthConverter: uses
+CorrelationFilter --> CorrelationUtility: uses
+
+GatewayExceptionHdr --> ExceptionDTO: creates
+GatewayExceptionHdr --> GatewayBusinessCode: uses
+
+GatewayTokenExpiredException --|> GatewayException
+GatewayTokenInvalidException --|> GatewayException
+GatewayTokenMissingException --|> GatewayException
+GatewayForbiddenAccessException --|> GatewayException
+
+JwtAuthConverter ..> GatewayTokenExpiredException: throws
+JwtAuthConverter ..> GatewayTokenInvalidException: throws
+JwtAuthConverter ..> GatewayTokenMissingException: throws
+SecurityConfiguration ..> GatewayForbiddenAccessException: throws
+
+@enduml
