@@ -7,11 +7,51 @@
 
 # 🔷 Branches
 
+
+##  🌵 9-feat/add-create-administrator-customer-user
+
+<div align="center">
+
+### [View user-create-admin-customer-endpoints-diagram.plantuml](./uml/9-user-create-admin-customer-endpoints-diagram.plantuml)
+
+<img src="./diagrams/9-user-create-admin-customer-endpoints-diagram-g.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<br>
+<br>
+
+<img src="./diagrams/9-user-create-admin-customer-endpoints-diagram-01.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<img src="./diagrams/9-user-create-admin-customer-endpoints-diagram-02.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<img src="./diagrams/9-user-create-admin-customer-endpoints-diagram-03.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<img src="./diagrams/9-user-create-admin-customer-endpoints-diagram-04.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<img src="./diagrams/9-user-create-admin-customer-endpoints-diagram-05.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<img src="./diagrams/9-user-create-admin-customer-endpoints-diagram-06.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<img src="./diagrams/9-user-create-admin-customer-endpoints-diagram-07.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<img src="./diagrams/9-user-create-admin-customer-endpoints-diagram-08.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+</div>
+
+<div align="left">
+⚡️Add implementation of command and query bus.<br>
+⚡️Add user domain.<br>
+⚡️Implement Visitor, Abstract Factory, and Null Object patterns.<br>
+⚡️Add create_user command.<br>
+⚡️Add SearchById query.<br>
+⚡️Add exceptions: UserAlreadyExistsException and UserNotFoundException.<br>
+⚡️Add endpoints usr_create_administrator and usr_create_customer in Postman collection.<br>
+</div>
+
+
+
+
 ##  🌵 8-feat/gateway-authorization-routes-and-header-config
 
 <div align="center">
 
 ### [View gateway-module-diagram.plantuml](./uml/8-gateway-module-diagram.plantuml)
+
+<img src="./diagrams/8-feat-gateway-authorization-routes-and-header-config-g1.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<img src="./diagrams/8-feat-gateway-authorization-routes-and-header-config-g2.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<br>
+<br>
+
 <img src="./diagrams/8-feat-gateway-authorization-routes-and-header-config-01.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/8-feat-gateway-authorization-routes-and-header-config-02.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/8-feat-gateway-authorization-routes-and-header-config-03.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
@@ -28,6 +68,11 @@
 <div align="center">
 
 ### [View auth-refresh-token-endpoint-diagram.plantuml](./uml/7-auth-refresh-token-endpoint-diagram.plantuml)
+
+<img src="./diagrams/7-feat-add-refresh-token-auth-g.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<br>
+<br>
+
 <img src="./diagrams/7-feat-add-refresh-token-auth-01.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/7-feat-add-refresh-token-auth-02.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/7-feat-add-refresh-token-auth-03.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
@@ -44,6 +89,11 @@
 <div align="center">
 
 ### [View auth-logout-diagram.plantuml](./uml/6-auth-logout-diagram.plantuml)
+
+<img src="./diagrams/6-feat-add-logout-auth-g.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<br>
+<br>
+
 <img src="./diagrams/6-feat-add-logout-auth-01.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/6-feat-add-logout-auth-02.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 </div>
@@ -62,6 +112,10 @@
 <div align="center">
 
 ### [View auth-change-password-endpoint-diagram.plantuml](./uml/5-auth-change-password-endpoint-diagram.plantuml)
+<img src="./diagrams/5-feat-add-change-password-auth-g.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<br>
+<br>
+
 <img src="./diagrams/5-feat-add-change-password-auth-01.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/5-feat-add-change-password-auth-02.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/5-feat-add-change-password-auth-03.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
@@ -81,6 +135,12 @@
 <div align="center">
 
 ### [View auth-authenticate-endpoint-diagram.plantuml](./uml/4-auth-authenticate-endpoint-diagram.plantuml)
+
+<img src="./diagrams/4-feat-add-user-authentication-endpoint-g1.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<img src="./diagrams/4-feat-add-user-authentication-endpoint-g2.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<br>
+<br>
+
 <img src="./diagrams/4-feat-add-user-authentication-endpoint-01.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/4-feat-add-user-authentication-endpoint-02.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/4-feat-add-user-authentication-endpoint-03.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
@@ -104,6 +164,11 @@
 <div align="center">
 
 ### [View auth-register-endpoint-diagram.plantuml](./uml/3-auth-register-endpoint-diagram.plantuml)
+
+<img src="./diagrams/3-auth-register-endpoint-diagram-g.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<br>
+<br>
+
 <img src="./diagrams/3-auth-register-endpoint-diagram-1.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 <img src="./diagrams/3-auth-register-endpoint-diagram-2.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
 </div>

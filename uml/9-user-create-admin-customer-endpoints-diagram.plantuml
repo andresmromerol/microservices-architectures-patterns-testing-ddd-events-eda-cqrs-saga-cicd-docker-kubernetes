@@ -1,0 +1,360 @@
+@startuml User Create Admin Customer Endpoints Diagram
+
+title User Create Admin Customer Endpoints Diagram
+
+skinparam backgroundColor white
+skinparam style strictuml
+skinparam componentStyle uml2
+
+skinparam package {
+    BackgroundColor<<Domain>> LightYellow
+    BackgroundColor<<Application>> LightSalmon
+    BackgroundColor<<Infrastructure>> LightGreen
+    BackgroundColor<<Command>> Pink
+    BackgroundColor<<Query>> LightBlue
+    BackgroundColor<<Adapter>> LightGray
+    BackgroundColor<<User>> #E0FFFF
+    BackgroundColor<<Shared>> #F0F0F0
+    BackgroundColor<<AbstractFactory>> #FFE0B2
+    BackgroundColor<<NullObject>> #DCEDC8
+    BackgroundColor<<Visitor>> #B3E5FC
+}
+
+package "User" <<User>> {
+    package "Domain" <<Domain>> {
+        package "Model" <<Domain>> {
+            abstract class UserModel {
+                - id: UserId
+                - name: NameVo
+                - email: EmailVo
+                - status: UserStatus
+                - phone: PhoneVo
+                + toPrimitives(): UserModelDto
+                + isNullModel(): boolean
+                + accept(visitor: IUserVisitor)
+                + validateState()
+            }
+            
+            class UserAdministratorModel {
+                - createdByAdminId: UUID
+                + create(id: UUID, name: String, email: String, status: UserStatusEnum, phone: String, createdByAdminId: UUID)
+                + toPrimitives(): UserModelDto
+                + isNullModel(): boolean
+                + accept(visitor: IUserVisitor)
+            }
+            
+            class UserCustomerModel {
+                - address: String
+                + create(id: UUID, name: String, email: String, status: UserStatusEnum, phone: String, address: String)
+                + toPrimitives(): UserModelDto
+                + isNullModel(): boolean
+                + accept(visitor: IUserVisitor)
+            }
+            
+            class UserNullModel <<NullObject>> {
+                + toPrimitives(): UserModelDto
+                + isNullModel(): boolean
+                + accept(visitor: IUserVisitor)
+            }
+        }
+
+        package "ValueObjects" <<Domain>> {
+            class UserId {
+                - value: UUID
+                + create(value: UUID)
+                + validate()
+            }
+            
+            class NameVo {
+                - value: String
+                + create(value: String)
+                + validate()
+            }
+            
+            class EmailVo {
+                - value: String
+                + create(value: String)
+                + validate()
+            }
+            
+            class PhoneVo {
+                - value: String
+                + create(value: String)
+                + validate()
+            }
+            
+            class UserStatus {
+                - value: UserStatusEnum
+                + create(value: UserStatusEnum)
+            }
+        }
+
+        package "DTO" <<Domain>> {
+            abstract class UserModelDto {
+                - id: UUID
+                - name: String
+                - email: String
+                - status: UserStatusEnum
+                - phone: String
+            }
+            
+            class UserAdministratorModelDto {
+                - createdByAdminId: UUID
+            }
+            
+            class UserCustomerModelDto {
+                - address: String
+            }
+        }
+
+        package "Ports" <<Domain>> {
+            interface IUserPersistencePort {
+                + save(user: UserModel)
+                + findByEmail(email: EmailVo): Optional<UserModel>
+            }
+            
+            interface IUserFactory <<AbstractFactory>> {
+                + createUserAdministrator(userDto: UserAdministratorModelDto): UserModel
+                + createUserCustomer(userDto: UserCustomerModelDto): UserModel
+            }
+            
+            interface IUserVisitor <<Visitor>> {
+                + visit(user: UserAdministratorModel)
+                + visit(user: UserCustomerModel)
+            }
+        }
+
+        package "Exceptions" <<Domain>> {
+            class UserAlreadyExistsException {
+                + email: String
+                + message: String
+            }
+            
+            class UserDomainException {
+                + message: String
+            }
+            
+            class UserNotFoundException {
+                + email: String
+                + message: String
+            }
+        }
+    }
+
+    package "Application" <<Application>> {
+        package "Commands" <<Command>> {
+            package "UserCreate" <<Command>> {
+                class UserCreate {
+                    - userFactory: IUserFactory
+                    - userPersistencePort: IUserPersistencePort
+                    - queryBus: IQueryBus
+                    - ensureUserNotExists(email: String)
+                    + executeAdministrator(id: UUID, name: String, email: String, phone: String, createdByAdminId: UUID)
+                    + executeCustomer(id: UUID, name: String, email: String, phone: String, address: String)
+                }
+                
+                package "Administrator" <<Command>> {
+                    class UserCreateAdministratorCmd {
+                        + id: UUID
+                        + name: String
+                        + email: String
+                        + createdByAdminId: UUID
+                        + phone: String
+                    }
+    
+                    class UserCreateAdministratorHdr {
+                        - userCreate: UserCreate
+                        + handle(command: UserCreateAdministratorCmd)
+                    }
+                }
+                
+                package "Customer" <<Command>> {
+                    class UserCreateCustomerCmd {
+                        + id: UUID
+                        + name: String
+                        + email: String
+                        + phone: String
+                        + address: String
+                    }
+    
+                    class UserCreateCustomerHdr {
+                        - userCreate: UserCreate
+                        + handle(command: UserCreateCustomerCmd)
+                    }
+                }
+            }
+        }
+
+        package "Queries" <<Query>> {
+            package "UserSearch" <<Query>> {
+                class UserSearchByEmailQry {
+                    + email: String
+                }
+
+                class UserSearchByEmailRes {
+                    + id: UUID
+                    + name: String
+                    + email: String
+                    + phone: String
+                    + isEmpty: boolean
+                }
+
+                class UserSearchById {
+                    - userPersistencePort: IUserPersistencePort
+                    + execute(email: String): UserSearchByEmailRes
+                    - getUser(email: String): UserModel
+                }
+            }
+        }
+    }
+
+    package "Infrastructure" <<Infrastructure>> {
+        package "REST" <<Infrastructure>> {
+            class UserCreateRestController {
+                - commandBus: ICommandBus
+                - queryBus: IQueryBus
+                + createUserAdministrator(id: String, administrator: UserAdministratorRequest)
+                + createUserCustomer(id: String, customer: UserCustomerRequest)
+            }
+
+            package "Request" <<Infrastructure>> {
+                class UserAdministratorRequest {
+                    + name: String
+                    + email: String
+                    + createdByAdminId: String
+                    + phone: String
+                    + validate()
+                }
+                
+                class UserCustomerRequest {
+                    + name: String
+                    + email: String
+                    + address: String
+                    + phone: String
+                    + validate()
+                }
+            }
+        }
+
+        package "Persistence" <<Adapter>> {
+            class ConcreteUserFactory <<AbstractFactory>> {
+                + createUserAdministrator(userDto: UserAdministratorModelDto): UserModel
+                + createUserCustomer(userDto: UserCustomerModelDto): UserModel
+            }
+        }
+    }
+}
+
+package "Shared" <<Shared>> {
+    package "Domain" <<Domain>> {
+        abstract class AggregateRoot<T> {
+            # id: T
+            + getId(): T
+            # validateState()
+        }
+        
+        package "Enums" <<Domain>> {
+            enum UserStatusEnum {
+                + ACTIVE
+                + INACTIVE
+                + NULL_OBJECT
+            }
+        }
+    }
+
+    package "Application" <<Application>> {
+        package "Commands" <<Command>> {
+            interface ICommand {
+            }
+
+            interface ICommandBus {
+                + dispatch(command: ICommand)
+            }
+            
+            interface ICommandHandler<T> {
+                + handle(command: T)
+            }
+        }
+
+        package "Queries" <<Query>> {
+            interface IQuery {
+            }
+
+            interface IQueryBus {
+                + ask(query: IQuery): Response
+            }
+            
+            interface IQueryHandler<Q, R> {
+                + handle(query: Q): R
+            }
+        }
+    }
+
+    package "Infrastructure" <<Infrastructure>> {
+        package "Exception" <<Infrastructure>> {
+            class UserBusinessCode {
+                + code: String
+                + message: String
+            }
+            
+            class UserExceptionHdr {
+                + handle(exception: Exception): ResponseEntity
+            }
+            
+            class ExceptionDTO {
+                + code: String
+                + message: String
+            }
+        }
+    }
+}
+
+UserModel --|> AggregateRoot
+UserAdministratorModel --|> UserModel
+UserCustomerModel --|> UserModel
+UserNullModel --|> UserModel
+
+UserModel *-- UserId
+UserModel *-- NameVo
+UserModel *-- EmailVo
+UserModel *-- PhoneVo
+UserModel *-- UserStatus
+
+UserAdministratorModelDto --|> UserModelDto
+UserCustomerModelDto --|> UserModelDto
+
+note "Abstract Factory Pattern" as AbstractFactoryNote
+AbstractFactoryNote .. IUserFactory
+AbstractFactoryNote .. ConcreteUserFactory
+ConcreteUserFactory ..|> IUserFactory
+ConcreteUserFactory ..> UserAdministratorModel: creates
+ConcreteUserFactory ..> UserCustomerModel: creates
+
+note "Null Object Pattern" as NullObjectNote
+NullObjectNote .. UserNullModel
+UserSearchById ..> UserNullModel: uses as default
+
+note "Visitor Pattern" as VisitorNote
+VisitorNote .. IUserVisitor
+UserModel ..> IUserVisitor: accepts
+UserAdministratorModel ..> IUserVisitor: accepts
+UserCustomerModel ..> IUserVisitor: accepts
+
+UserAdministratorRequest ..> UserCreateAdministratorCmd: creates
+UserCustomerRequest ..> UserCreateCustomerCmd: creates
+UserCreateRestController ..> ICommandBus: uses
+
+UserCreateAdministratorHdr ..|> ICommandHandler
+UserCreateCustomerHdr ..|> ICommandHandler
+UserCreateAdministratorHdr ..> UserCreate: delegates
+UserCreateCustomerHdr ..> UserCreate: delegates
+
+UserCreate ..> IUserFactory: uses
+UserCreate ..> IUserPersistencePort: uses
+UserCreate ..> IQueryBus: uses for user search
+
+UserSearchById ..> IUserPersistencePort: uses
+
+center footer andresmromerol/microservices-architectures-patterns-testing-ddd-events-eda-cqrs-saga-cicd-docker-kubernetes
+
+@enduml
