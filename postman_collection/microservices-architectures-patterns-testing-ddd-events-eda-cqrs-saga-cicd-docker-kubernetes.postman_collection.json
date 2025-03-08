@@ -18,7 +18,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyZXNvdXJjZV9hY2Nlc3MiOnsicm9sZXMiOlsiNWMyY2VkOGItMjhmOS00NDc2LWFhODMtNGY0MTgwODhlYThkIiwiMGYzZmEyNGYtMGY5Yi00YWUxLWE3OWEtMzg3YmU3OGEzY2ViIl19LCJuYW1lIjoiYW5kcmVzIiwiaWQiOiIxM2Q4OWUzZC1mMmZlLTQ4NzctODZmYy0xM2Q0NDU5OWQ5NWEiLCJzdWIiOiJhbmRyZXNAZ21haWwuY29tIiwiaWF0IjoxNzQxNDAyNzE0LCJleHAiOjE3NDE0MDYzMTR9.nNGQpJkOxzGc88DD9ZS9R_tVBsMzFrUedm_R1-tDupU",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyZXNvdXJjZV9hY2Nlc3MiOnsicm9sZXMiOlsiMGYzZmEyNGYtMGY5Yi00YWUxLWE3OWEtMzg3YmU3OGEzY2ViIiwiNWMyY2VkOGItMjhmOS00NDc2LWFhODMtNGY0MTgwODhlYThkIl19LCJuYW1lIjoiYW5kcmVzIiwiaWQiOiIxM2Q4OWUzZC1mMmZlLTQ4NzctODZmYy0xM2Q0NDU5OWQ5NWEiLCJzdWIiOiJhbmRyZXNAZ21haWwuY29tIiwiaWF0IjoxNzQxNDEwNDE4LCJleHAiOjE3NDE0MTQwMTh9.jij2V-e3T9NemTnU9QER7FZ6LwYqGRtr2mzqyWzvXjU",
 									"type": "string"
 								}
 							]
@@ -35,6 +35,86 @@
 								"{{api-reference}}",
 								"{{api-version}}",
 								"health-check"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "usr_create_administrator",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyZXNvdXJjZV9hY2Nlc3MiOnsicm9sZXMiOlsiMGYzZmEyNGYtMGY5Yi00YWUxLWE3OWEtMzg3YmU3OGEzY2ViIiwiNWMyY2VkOGItMjhmOS00NDc2LWFhODMtNGY0MTgwODhlYThkIl19LCJuYW1lIjoiYW5kcmVzIiwiaWQiOiIxM2Q4OWUzZC1mMmZlLTQ4NzctODZmYy0xM2Q0NDU5OWQ5NWEiLCJzdWIiOiJhbmRyZXNAZ21haWwuY29tIiwiaWF0IjoxNzQxNDY2NzAxLCJleHAiOjE3NDE0NzAzMDF9.-mOxMkyZabpifcakrBuGgpXo0XfmJoI_DorDWUOOrNM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"andres\",\r\n    \"email\": \"andresAdmin@gmail.com\",\r\n    \"createdByAdminId\": \"5c2ced8b-28f9-4476-aa83-4f418088ea8d\",\r\n    \"phone\": \"3209118911\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-base-url}}/{{user-context-name}}/{{api-reference}}/{{api-version}}/administrators/13d89e3d-f2fe-4877-86fc-13d44599d95a",
+							"host": [
+								"{{gateway-base-url}}"
+							],
+							"path": [
+								"{{user-context-name}}",
+								"{{api-reference}}",
+								"{{api-version}}",
+								"administrators",
+								"13d89e3d-f2fe-4877-86fc-13d44599d95a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "usr_create_customer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyZXNvdXJjZV9hY2Nlc3MiOnsicm9sZXMiOlsiMGYzZmEyNGYtMGY5Yi00YWUxLWE3OWEtMzg3YmU3OGEzY2ViIiwiNWMyY2VkOGItMjhmOS00NDc2LWFhODMtNGY0MTgwODhlYThkIl19LCJuYW1lIjoiYW5kcmVzIiwiaWQiOiIxM2Q4OWUzZC1mMmZlLTQ4NzctODZmYy0xM2Q0NDU5OWQ5NWEiLCJzdWIiOiJhbmRyZXNAZ21haWwuY29tIiwiaWF0IjoxNzQxNDU4ODQ2LCJleHAiOjE3NDE0NjI0NDZ9.cSsU7-TPdn-bCweJxs0mMKIP2VSQkSc8MunBmVr6QsA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"andres\",\r\n    \"email\": \"andresCustomer@gmail.com\",\r\n    \"address\": \"Calle  dfdsfdfd90\",\r\n    \"phone\": \"3209118911\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-base-url}}/{{user-context-name}}/{{api-reference}}/{{api-version}}/customers/5afeee81-6781-46e9-9195-f3971a85ac35",
+							"host": [
+								"{{gateway-base-url}}"
+							],
+							"path": [
+								"{{user-context-name}}",
+								"{{api-reference}}",
+								"{{api-version}}",
+								"customers",
+								"5afeee81-6781-46e9-9195-f3971a85ac35"
 							]
 						}
 					},

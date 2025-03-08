@@ -38,6 +38,7 @@ format:
 	cd $(COMMON_JAVA_CONTEXT) && mvn spotless:apply
 
 install:
+	cd $(COMMON_JAVA_CONTEXT) && $(MVNW) clean install -DskipTests
 	cd $(CONFIGURATION_SERVER) && $(MVNW) clean install -DskipTests
 	cd $(DISCOVERY_SERVER) && $(MVNW) clean install -DskipTests
 	cd $(GATEWAY_SERVER) && $(MVNW) clean install -DskipTests

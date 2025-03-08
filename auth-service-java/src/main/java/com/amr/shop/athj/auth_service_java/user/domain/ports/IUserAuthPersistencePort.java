@@ -1,9 +1,9 @@
 package com.amr.shop.athj.auth_service_java.user.domain.ports;
 
-import com.amr.shop.athj.auth_service_java.user.domain.UserModel;
+import com.amr.shop.athj.auth_service_java.user.domain.UserAuthModel;
 
 public interface IUserAuthPersistencePort {
-  void save(UserModel userModel);
+  void save(UserAuthModel userAuthModel);
 
-  void update(UserModel userModel);
+  void update(UserAuthModel userAuthModel);
 }

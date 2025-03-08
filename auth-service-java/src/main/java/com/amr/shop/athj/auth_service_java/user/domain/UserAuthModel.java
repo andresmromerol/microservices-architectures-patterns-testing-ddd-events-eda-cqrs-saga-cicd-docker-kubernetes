@@ -8,7 +8,7 @@ import com.amr.shop.cmmj.common_java_context.shared.abstracts.AggregateRoot;
 import java.util.Set;
 import java.util.UUID;
 
-public class UserModel extends AggregateRoot<UserId> {
+public class UserAuthModel extends AggregateRoot<UserId> {
 
   private final NameVo name;
   private final EmailVo email;
@@ -17,7 +17,7 @@ public class UserModel extends AggregateRoot<UserId> {
   private final PhoneVo phone;
   private final Set<RoleEnum> roles;
 
-  public UserModel(
+  public UserAuthModel(
       UserId authId,
       NameVo name,
       EmailVo email,
@@ -34,7 +34,7 @@ public class UserModel extends AggregateRoot<UserId> {
     this.roles = roles;
   }
 
-  public static UserModel create(
+  public static UserAuthModel create(
       UUID id,
       String name,
       String email,
@@ -43,7 +43,7 @@ public class UserModel extends AggregateRoot<UserId> {
       String phone,
       Set<RoleEnum> roles) {
 
-    return new UserModel(
+    return new UserAuthModel(
         new UserId(id),
         new NameVo(name),
         new EmailVo(email),

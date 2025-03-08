@@ -1,26 +1,26 @@
 package com.amr.shop.athj.auth_service_java.user.infrastructure.persistence;
 
 import com.amr.shop.athj.auth_service_java.shared.infrastructure.jpa.user.UserJpa;
-import com.amr.shop.athj.auth_service_java.user.domain.UserModel;
+import com.amr.shop.athj.auth_service_java.user.domain.UserAuthModel;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserPersistenceMapper {
 
-  public UserJpa modelToJpa(UserModel userModel) {
+  public UserJpa modelToJpa(UserAuthModel userAuthModel) {
     return UserJpa.builder()
-        .id(userModel.getId().getValue())
-        .name(userModel.getName().getValue())
-        .email(userModel.getEmail().getValue())
-        .password(userModel.getPassword().getValue())
-        .roles(userModel.getRoles())
-        .status(userModel.getStatus().getValue())
-        .phone(userModel.getPhone().getValue())
+        .id(userAuthModel.getId().getValue())
+        .name(userAuthModel.getName().getValue())
+        .email(userAuthModel.getEmail().getValue())
+        .password(userAuthModel.getPassword().getValue())
+        .roles(userAuthModel.getRoles())
+        .status(userAuthModel.getStatus().getValue())
+        .phone(userAuthModel.getPhone().getValue())
         .build();
   }
 
-  public UserModel jpaToModel(UserJpa userJpa) {
-    return UserModel.create(
+  public UserAuthModel jpaToModel(UserJpa userJpa) {
+    return UserAuthModel.create(
         userJpa.getId(),
         userJpa.getName(),
         userJpa.getEmail(),

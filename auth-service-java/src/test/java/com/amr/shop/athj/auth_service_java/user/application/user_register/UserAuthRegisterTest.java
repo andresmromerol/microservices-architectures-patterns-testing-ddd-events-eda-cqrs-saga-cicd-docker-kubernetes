@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import com.amr.shop.athj.auth_service_java.user.application.encrypt_password.EncryptPasswordQry;
 import com.amr.shop.athj.auth_service_java.user.application.encrypt_password.EncryptPasswordRes;
 import com.amr.shop.athj.auth_service_java.user.domain.UserAuthEmailAlreadyExistsException;
-import com.amr.shop.athj.auth_service_java.user.domain.UserModel;
+import com.amr.shop.athj.auth_service_java.user.domain.UserAuthModel;
 import com.amr.shop.athj.auth_service_java.user.domain.ports.IUserAuthPersistencePort;
 import com.amr.shop.athj.auth_service_java.user_vw.application.user_search_by_email.UserSearchByEmailQry;
 import com.amr.shop.athj.auth_service_java.user_vw.application.user_search_by_email.UserSearchByEmailRes;
@@ -60,9 +60,9 @@ class UserAuthRegisterTest {
     when(queryBus.ask(any(EncryptPasswordQry.class)))
         .thenReturn(new EncryptPasswordRes("123456789"));
     userAuthRegister.execute(userId, userName, userEmail, userPassword, userPhone, userRoles);
-    ArgumentCaptor<UserModel> userCaptor = ArgumentCaptor.forClass(UserModel.class);
+    ArgumentCaptor<UserAuthModel> userCaptor = ArgumentCaptor.forClass(UserAuthModel.class);
     verify(userAuthPersistencePort).save(userCaptor.capture());
-    UserModel savedUser = userCaptor.getValue();
+    UserAuthModel savedUser = userCaptor.getValue();
     assertEquals(userId, savedUser.getId().getValue());
     assertEquals(userName, savedUser.getName().getValue());
     assertEquals(userEmail, savedUser.getEmail().getValue());
@@ -118,7 +118,7 @@ class UserAuthRegisterTest {
         ArgumentCaptor.forClass(EncryptPasswordQry.class);
     verify(queryBus).ask(encryptCaptor.capture());
     assertEquals(userPassword, encryptCaptor.getValue().password());
-    ArgumentCaptor<UserModel> userCaptor = ArgumentCaptor.forClass(UserModel.class);
+    ArgumentCaptor<UserAuthModel> userCaptor = ArgumentCaptor.forClass(UserAuthModel.class);
     verify(userAuthPersistencePort).save(userCaptor.capture());
     assertEquals("123456789", userCaptor.getValue().getPassword().getValue());
   }
@@ -147,6 +147,6 @@ class UserAuthRegisterTest {
     InOrder inOrder = inOrder(queryBus, userAuthPersistencePort);
     inOrder.verify(queryBus).ask(any(UserSearchByEmailQry.class));
     inOrder.verify(queryBus).ask(any(EncryptPasswordQry.class));
-    inOrder.verify(userAuthPersistencePort).save(any(UserModel.class));
+    inOrder.verify(userAuthPersistencePort).save(any(UserAuthModel.class));
   }
 }

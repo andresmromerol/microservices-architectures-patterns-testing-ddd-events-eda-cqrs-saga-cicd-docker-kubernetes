@@ -1,0 +1,29 @@
+package com.amr.shop.usr.user_context.user.infrastructure.rest.request;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+public class UserCustomerRequest {
+  @NotEmpty(message = "name must not be empty")
+  @Size(min = 3, max = 50, message = "name must have between 3 and 50 characters")
+  private final String name;
+
+  @NotEmpty(message = "email must not be empty")
+  @Email(message = "email must be a valid email")
+  private final String email;
+
+  @NotEmpty(message = "address must not be empty")
+  @Size(min = 10, max = 200, message = "address must have between 10 and 200 characters")
+  private final String address;
+
+  @NotEmpty(message = "phone must not be empty")
+  @Size(min = 9, max = 10, message = "phone must have between 9 and 12 characters")
+  private final String phone;
+}

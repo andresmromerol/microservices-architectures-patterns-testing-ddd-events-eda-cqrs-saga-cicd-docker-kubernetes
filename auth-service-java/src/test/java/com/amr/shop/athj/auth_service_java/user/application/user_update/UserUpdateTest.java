@@ -3,7 +3,7 @@ package com.amr.shop.athj.auth_service_java.user.application.user_update;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
-import com.amr.shop.athj.auth_service_java.user.domain.UserModel;
+import com.amr.shop.athj.auth_service_java.user.domain.UserAuthModel;
 import com.amr.shop.athj.auth_service_java.user.domain.ports.IUserAuthPersistencePort;
 import com.amr.shop.cmmj.common_java_context.services.auth.RoleEnum;
 import com.amr.shop.cmmj.common_java_context.services.user.UserStatusEnum;
@@ -38,6 +38,6 @@ class UserUpdateTest {
     roles.add(RoleEnum.USER);
     UserStatusEnum status = UserStatusEnum.ACTIVE;
     userUpdate.execute(id, name, email, password, phone, roles, status);
-    verify(userUpdatePort).update(any(UserModel.class));
+    verify(userUpdatePort).update(any(UserAuthModel.class));
   }
 }

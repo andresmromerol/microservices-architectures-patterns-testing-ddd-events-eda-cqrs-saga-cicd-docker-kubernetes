@@ -3,7 +3,7 @@ package com.amr.shop.athj.auth_service_java.user.application.user_register;
 import com.amr.shop.athj.auth_service_java.user.application.encrypt_password.EncryptPasswordQry;
 import com.amr.shop.athj.auth_service_java.user.application.encrypt_password.EncryptPasswordRes;
 import com.amr.shop.athj.auth_service_java.user.domain.UserAuthEmailAlreadyExistsException;
-import com.amr.shop.athj.auth_service_java.user.domain.UserModel;
+import com.amr.shop.athj.auth_service_java.user.domain.UserAuthModel;
 import com.amr.shop.athj.auth_service_java.user.domain.ports.IUserAuthPersistencePort;
 import com.amr.shop.athj.auth_service_java.user_vw.application.user_search_by_email.UserSearchByEmailQry;
 import com.amr.shop.athj.auth_service_java.user_vw.application.user_search_by_email.UserSearchByEmailRes;
@@ -33,8 +33,8 @@ public class UserAuthRegister {
     log.debug("Executing user auth register with id: {}", id);
     ensureNotEmailExists(email);
     log.debug("Creating user auth model with id: {}", id);
-    UserModel auth =
-        UserModel.create(
+    UserAuthModel auth =
+        UserAuthModel.create(
             id, name, email, getEncryptedPasswords(password), UserStatusEnum.ACTIVE, phone, roles);
     log.debug("Saving user auth model with id: {}", id);
     userAuthPersistencePort.save(auth);

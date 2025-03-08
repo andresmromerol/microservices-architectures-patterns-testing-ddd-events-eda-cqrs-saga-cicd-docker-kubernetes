@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 
 import com.amr.shop.athj.auth_service_java.shared.infrastructure.jpa.user.UserJpa;
 import com.amr.shop.athj.auth_service_java.shared.infrastructure.jpa.user.UserJpaRepository;
+import com.amr.shop.athj.auth_service_java.user.domain.UserAuthModel;
 import com.amr.shop.athj.auth_service_java.user.domain.UserAuthUserNotFoundException;
-import com.amr.shop.athj.auth_service_java.user.domain.UserModel;
 import com.amr.shop.cmmj.common_java_context.services.auth.RoleEnum;
 import com.amr.shop.cmmj.common_java_context.services.user.UserStatusEnum;
 import java.util.HashSet;
@@ -45,7 +45,8 @@ class UserAuthPersistenceAdapterTest {
   void shouldSaveUserSuccessfully() {
     Set<RoleEnum> roles = new HashSet<>();
     roles.add(RoleEnum.USER);
-    UserModel userModel = UserModel.create(USER_ID, NAME, EMAIL, PASSWORD, STATUS, PHONE, roles);
+    UserAuthModel userAuthModel =
+        UserAuthModel.create(USER_ID, NAME, EMAIL, PASSWORD, STATUS, PHONE, roles);
     UserJpa userJpa =
         UserJpa.builder()
             .id(USER_ID)
@@ -56,9 +57,9 @@ class UserAuthPersistenceAdapterTest {
             .phone(PHONE)
             .roles(roles)
             .build();
-    when(userPersistenceMapper.modelToJpa(userModel)).thenReturn(userJpa);
-    userAuthPersistenceAdapter.save(userModel);
-    verify(userPersistenceMapper).modelToJpa(userModel);
+    when(userPersistenceMapper.modelToJpa(userAuthModel)).thenReturn(userJpa);
+    userAuthPersistenceAdapter.save(userAuthModel);
+    verify(userPersistenceMapper).modelToJpa(userAuthModel);
     verify(userJpaRepository).save(userJpa);
   }
 
@@ -66,12 +67,13 @@ class UserAuthPersistenceAdapterTest {
   void shouldUpdateExistingUser() {
     Set<RoleEnum> roles = new HashSet<>();
     roles.add(RoleEnum.USER);
-    UserModel userModel = UserModel.create(USER_ID, NAME, EMAIL, PASSWORD, STATUS, PHONE, roles);
+    UserAuthModel userAuthModel =
+        UserAuthModel.create(USER_ID, NAME, EMAIL, PASSWORD, STATUS, PHONE, roles);
     UserJpa existingUser = new UserJpa();
     existingUser.setId(USER_ID);
     existingUser.setEmail(EMAIL);
     when(userJpaRepository.findByEmail(EMAIL)).thenReturn(Optional.of(existingUser));
-    userAuthPersistenceAdapter.update(userModel);
+    userAuthPersistenceAdapter.update(userAuthModel);
     verify(userJpaRepository).findByEmail(EMAIL);
     verify(userJpaRepository).save(existingUser);
   }
@@ -80,10 +82,12 @@ class UserAuthPersistenceAdapterTest {
   void shouldThrowExceptionWhenUserNotFoundOnUpdate() {
     Set<RoleEnum> roles = new HashSet<>();
     roles.add(RoleEnum.USER);
-    UserModel userModel = UserModel.create(USER_ID, NAME, EMAIL, PASSWORD, STATUS, PHONE, roles);
+    UserAuthModel userAuthModel =
+        UserAuthModel.create(USER_ID, NAME, EMAIL, PASSWORD, STATUS, PHONE, roles);
     when(userJpaRepository.findByEmail(EMAIL)).thenReturn(Optional.empty());
     assertThrows(
-        UserAuthUserNotFoundException.class, () -> userAuthPersistenceAdapter.update(userModel));
+        UserAuthUserNotFoundException.class,
+        () -> userAuthPersistenceAdapter.update(userAuthModel));
   }
 
   @Test
@@ -91,13 +95,14 @@ class UserAuthPersistenceAdapterTest {
     Set<RoleEnum> roles = new HashSet<>();
     roles.add(RoleEnum.USER);
     String newName = "andres updated";
-    UserModel userModel = UserModel.create(USER_ID, newName, EMAIL, PASSWORD, STATUS, PHONE, roles);
+    UserAuthModel userAuthModel =
+        UserAuthModel.create(USER_ID, newName, EMAIL, PASSWORD, STATUS, PHONE, roles);
     UserJpa existingUser = new UserJpa();
     existingUser.setId(USER_ID);
     existingUser.setEmail(EMAIL);
     existingUser.setName(NAME);
     when(userJpaRepository.findByEmail(EMAIL)).thenReturn(Optional.of(existingUser));
-    userAuthPersistenceAdapter.update(userModel);
+    userAuthPersistenceAdapter.update(userAuthModel);
     verify(userJpaRepository).findByEmail(EMAIL);
     verify(userJpaRepository).save(existingUser);
   }
