@@ -2,7 +2,7 @@
 
 # 🔷  Project view
 <div align="center">
-<img src="./diagrams/2-feat-initialize-auth-service-java.gif" alt="Architecture Diagram" style="max-width: 800px; max-height: 400px; width: 100%; height: auto;">
+<img src="./diagrams/11-feat-user-multiple-roles-infrastructure.gif" alt="Architecture Diagram" style="max-width: 800px; max-height: 450px; width: 100%; height: auto;">
 </div>
 
 # 🔷 Branches
