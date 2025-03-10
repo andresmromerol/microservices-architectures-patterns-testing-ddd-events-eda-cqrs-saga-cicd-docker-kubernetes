@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@DiscriminatorValue("ADMINISTRATOR")
+@DiscriminatorValue("ADMIN")
 public class UserAdministratorJpa extends UserJpa {
   private UUID createdByAdminId;
 

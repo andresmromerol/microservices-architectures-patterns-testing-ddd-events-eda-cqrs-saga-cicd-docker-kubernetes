@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import com.amr.shop.cmmj.common_java_context.services.auth.RoleEnum;
 import com.amr.shop.cmmj.common_java_context.services.user.UserStatusEnum;
 import com.amr.shop.cmmj.common_java_context.services.user.id.UserId;
 import com.amr.shop.cmmj.common_java_context.services.user.vo.EmailVo;
@@ -37,6 +38,7 @@ class UserSearchByIdTest {
     String phone = "3209118911";
     UserAdministratorModel userModel = mock(UserAdministratorModel.class);
     UserId userIdObj = mock(UserId.class);
+    RoleEnum role = RoleEnum.ADMIN;
     when(userIdObj.getValue()).thenReturn(userId);
     when(userModel.getId()).thenReturn(userIdObj);
     when(userModel.getName()).thenReturn(name);
@@ -44,8 +46,9 @@ class UserSearchByIdTest {
     when(userModel.getStatus()).thenReturn(UserStatusEnum.ACTIVE);
     when(userModel.getPhone()).thenReturn(phone);
     when(userModel.isNullModel()).thenReturn(false);
-    when(userPersistencePort.findByEmail(any(EmailVo.class))).thenReturn(Optional.of(userModel));
-    UserSearchByEmailRes result = userSearchById.execute(email);
+    when(userPersistencePort.findByEmailAndRole(any(EmailVo.class), any(RoleEnum.class)))
+        .thenReturn(Optional.of(userModel));
+    UserSearchByEmailRes result = userSearchById.execute(email, role);
     assertNotNull(result);
     assertEquals(userId, result.id());
     assertEquals(name, result.name());
@@ -53,17 +56,19 @@ class UserSearchByIdTest {
     assertEquals(UserStatusEnum.ACTIVE, result.status());
     assertEquals(phone, result.phone());
     assertFalse(result.isEmpty());
-    verify(userPersistencePort).findByEmail(any(EmailVo.class));
+    verify(userPersistencePort).findByEmailAndRole(any(EmailVo.class), eq(role));
   }
 
   @Test
   void execute_WhenUserDoesNotExist_ShouldReturnEmptyResponse() {
     String email = "andres@email.com";
     UserNullModel nullModel = new UserNullModel();
-    when(userPersistencePort.findByEmail(any(EmailVo.class))).thenReturn(Optional.of(nullModel));
-    UserSearchByEmailRes result = userSearchById.execute(email);
+    RoleEnum role = RoleEnum.ADMIN;
+    when(userPersistencePort.findByEmailAndRole(any(EmailVo.class), any(RoleEnum.class)))
+        .thenReturn(Optional.of(nullModel));
+    UserSearchByEmailRes result = userSearchById.execute(email, role);
     assertNotNull(result);
     assertTrue(result.isEmpty());
-    verify(userPersistencePort).findByEmail(any(EmailVo.class));
+    verify(userPersistencePort).findByEmailAndRole(any(EmailVo.class), eq(role));
   }
 }

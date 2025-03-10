@@ -7,11 +7,15 @@ import lombok.Data;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "user_type")
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 @Data
 @Table(name = "user_users")
 public abstract class UserJpa {
-  @Id private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long auto;
+
+  private UUID id;
 
   private String name;
   private String email;

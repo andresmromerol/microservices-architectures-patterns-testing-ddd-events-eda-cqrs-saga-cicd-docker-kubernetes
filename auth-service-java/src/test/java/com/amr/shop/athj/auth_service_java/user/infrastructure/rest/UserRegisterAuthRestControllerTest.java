@@ -55,11 +55,15 @@ class UserRegisterAuthRestControllerTest {
     Set<UUID> roleUuids = new HashSet<>();
     roleUuids.add(RoleEnum.USER.getId());
     UserAuthRegisterRequest request = new UserAuthRegisterRequest();
+    String address = "address-test";
+    String roleId = UUID.randomUUID().toString();
     request.setName(USER_NAME);
     request.setEmail(USER_EMAIL);
     request.setPassword(USER_PASSWORD);
     request.setPhone(USER_PHONE);
     request.setRoleUuids(roleUuids);
+    request.setCreatedByAdminId(roleId);
+    request.setAddress(address);
     String requestJson =
         String.format(
             """
@@ -68,10 +72,18 @@ class UserRegisterAuthRestControllerTest {
                             "email": "%s",
                             "password": "%s",
                             "phone": "%s",
-                            "role": ["%s"]
+                            "role": ["%s"],
+                            "createdByAdminId": "%s",
+                            "address": "%s"
                         }
                         """,
-            USER_NAME, USER_EMAIL, USER_PASSWORD, USER_PHONE, RoleEnum.USER.getId());
+            USER_NAME,
+            USER_EMAIL,
+            USER_PASSWORD,
+            USER_PHONE,
+            RoleEnum.USER.getId(),
+            roleId,
+            address);
     mockMvc
         .perform(
             put("/api/v1/user/register/" + USER_ID)

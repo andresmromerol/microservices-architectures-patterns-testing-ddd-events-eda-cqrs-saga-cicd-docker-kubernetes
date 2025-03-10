@@ -4,10 +4,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import com.amr.shop.cmmj.common_java_context.services.auth.RoleEnum;
 import com.amr.shop.cmmj.common_java_context.services.user.UserStatusEnum;
 import com.amr.shop.cmmj.common_java_context.services.user.id.UserId;
 import com.amr.shop.cmmj.common_java_context.services.user.vo.EmailVo;
 import com.amr.shop.usr.user_context._shared.infrastructure.jpa.administrator.UserAdministratorJpa;
+import com.amr.shop.usr.user_context._shared.infrastructure.jpa.customer.UserCustomerJpa;
 import com.amr.shop.usr.user_context.user.domain.IUserVisitor;
 import com.amr.shop.usr.user_context.user.domain.UserModel;
 import com.amr.shop.usr.user_context.user.domain.administrator.UserAdministratorModel;
@@ -54,7 +56,7 @@ class UserRepositoryJpaTest {
             (Answer<Void>)
                 invocation -> {
                   IUserVisitor visitor = invocation.getArgument(0);
-                  visitor.visit((UserAdministratorModel) userModel);
+                  visitor.visit(userModel);
                   return null;
                 })
         .when(userModel)
@@ -66,6 +68,7 @@ class UserRepositoryJpaTest {
   @Test
   void findByEmail_WhenUserExists_ShouldReturnUserModel() {
     EmailVo email = new EmailVo("user@email.com");
+    RoleEnum role = RoleEnum.ADMIN;
     UserAdministratorJpa userJpa = new UserAdministratorJpa();
     userJpa.setId(UUID.randomUUID());
     userJpa.setEmail("user@email.com");
@@ -73,10 +76,12 @@ class UserRepositoryJpaTest {
     userJpa.setPhone("3209118911");
     userJpa.setStatus(UserStatusEnum.ACTIVE);
     userJpa.setCreatedByAdminId(UUID.randomUUID());
+
     when(entityManager.createQuery(anyString(), eq(UserJpa.class))).thenReturn(query);
-    when(query.setParameter(anyString(), anyString())).thenReturn(query);
+    when(query.setParameter(eq("email"), eq(email.getValue()))).thenReturn(query);
+    when(query.setParameter(eq("userType"), eq(UserAdministratorJpa.class))).thenReturn(query);
     when(query.getSingleResult()).thenReturn(userJpa);
-    Optional<UserModel> result = userRepositoryJpa.findByEmail(email);
+    Optional<UserModel> result = userRepositoryJpa.findByEmailAndRole(email, role);
     assertTrue(result.isPresent());
     assertFalse(result.get().isNullModel());
     assertEquals(userJpa.getEmail(), result.get().getEmail());
@@ -85,10 +90,12 @@ class UserRepositoryJpaTest {
   @Test
   void findByEmail_WhenUserDoesNotExist_ShouldReturnUserNullModel() {
     EmailVo email = new EmailVo("andres@email.com");
+    RoleEnum role = RoleEnum.CUSTOMER;
     when(entityManager.createQuery(anyString(), eq(UserJpa.class))).thenReturn(query);
-    when(query.setParameter(anyString(), anyString())).thenReturn(query);
+    when(query.setParameter(eq("email"), eq(email.getValue()))).thenReturn(query);
+    when(query.setParameter(eq("userType"), eq(UserCustomerJpa.class))).thenReturn(query);
     when(query.getSingleResult()).thenThrow(new NoResultException("User not found"));
-    Optional<UserModel> result = userRepositoryJpa.findByEmail(email);
+    Optional<UserModel> result = userRepositoryJpa.findByEmailAndRole(email, role);
     assertTrue(result.isPresent());
     assertTrue(result.get().isNullModel());
   }

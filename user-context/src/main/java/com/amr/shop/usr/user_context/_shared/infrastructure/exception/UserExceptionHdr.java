@@ -6,6 +6,7 @@ import com.amr.shop.cmmj.common_java_context.shared.exception.DomainException;
 import com.amr.shop.usr.user_context.user.domain.UserAlreadyExistsException;
 import com.amr.shop.usr.user_context.user.domain.UserException;
 import com.amr.shop.usr.user_context.user.domain.UserNotFoundException;
+import com.amr.shop.usr.user_context.user.domain.UserUnknownRoleException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.Collections;
@@ -56,6 +57,13 @@ public class UserExceptionHdr {
   public ExceptionDTO handleDomainException(DomainException exception) {
     log.error("DomainException occurred: {}", exception.getMessage());
     return buildExceptionDTO(HttpStatus.BAD_REQUEST, VALIDATION_ERROR, exception.getMessage());
+  }
+
+  @ExceptionHandler(UserUnknownRoleException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ExceptionDTO handleDomainException(UserUnknownRoleException exception) {
+    log.error("UserUnknownRoleException occurred: {}", exception.getMessage());
+    return buildExceptionDTO(HttpStatus.BAD_REQUEST, USER_UNKNOWN_ROLE, exception.getMessage());
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)

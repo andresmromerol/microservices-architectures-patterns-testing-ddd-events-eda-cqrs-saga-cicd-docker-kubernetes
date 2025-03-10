@@ -1,5 +1,6 @@
 package com.amr.shop.usr.user_context.user.application.search_by_id;
 
+import com.amr.shop.cmmj.common_java_context.services.auth.RoleEnum;
 import com.amr.shop.cmmj.common_java_context.services.user.vo.EmailVo;
 import com.amr.shop.usr.user_context.user.domain.IUserPersistencePort;
 import com.amr.shop.usr.user_context.user.domain.UserModel;
@@ -16,8 +17,8 @@ public class UserSearchById {
     this.userPersistencePort = userPersistencePort;
   }
 
-  public UserSearchByEmailRes execute(String email) {
-    UserModel user = getUser(email);
+  public UserSearchByEmailRes execute(String email, RoleEnum role) {
+    UserModel user = getUser(email, role);
     return new UserSearchByEmailRes(
         user.getId().getValue(),
         user.getName(),
@@ -27,7 +28,9 @@ public class UserSearchById {
         user.isNullModel());
   }
 
-  private UserModel getUser(String email) {
-    return userPersistencePort.findByEmail(new EmailVo(email)).orElse(new UserNullModel());
+  private UserModel getUser(String email, RoleEnum role) {
+    return userPersistencePort
+        .findByEmailAndRole(new EmailVo(email), role)
+        .orElse(new UserNullModel());
   }
 }

@@ -16,6 +16,6 @@ public class UserSearchByIdHdr
 
   @Override
   public UserSearchByEmailRes handle(UserSearchByEmailQry query) {
-    return userSearchById.execute(query.email());
+    return userSearchById.execute(query.email(), query.role());
   }
 }
