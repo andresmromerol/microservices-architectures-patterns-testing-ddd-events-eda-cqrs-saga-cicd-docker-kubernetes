@@ -1,0 +1,88 @@
+@startuml Microservices Architecture
+
+skinparam componentStyle rectangle
+skinparam component {
+  BackgroundColor<<Core>> LightBlue
+  BackgroundColor<<Observability>> LightGreen
+  BackgroundColor<<Infrastructure>> LightGray
+  BackgroundColor<<Gateway>> Yellow
+  BackgroundColor<<Database>> Pink
+  BackgroundColor<<Library>> Orange
+}
+
+package "Context Services" {
+  [User Context Service]<<Core>>
+  [Auth Service Java]<<Core>>
+  [common-java-context]<<Library>>
+}
+
+package "Databases" {
+  database "shopdb"<<Database>>
+}
+
+package "Infrastructure" {
+  [Gateway]<<Gateway>>
+  [Docker Compose]<<Infrastructure>>
+  [Configuration Server]<<Infrastructure>>
+  [Discovery Server]<<Infrastructure>>
+  [RabbitMQ]<<Infrastructure>>
+}
+
+package "Observability Stack" {
+  package "Metrics & Monitoring" {
+    [Grafana]<<Observability>>
+    [Prometheus]<<Observability>>
+  }
+
+  package "Distributed Tracing" {
+    [Tempo]<<Observability>>
+    [OpenTelemetry Collector]<<Observability>>
+  }
+
+  package "Log Management" {
+    [Loki]<<Observability>>
+  }
+
+  package "Visualization & Analysis" {
+    [Alloy]<<Observability>>
+  }
+}
+
+[Auth Service Java] --> [common-java-context] : Uses
+[Auth Service Java] --> [shopdb] : Persists Data
+[Auth Service Java] --> [RabbitMQ] : Publishes Events
+
+[User Context Service] --> [RabbitMQ] : Consumes Events
+
+[Gateway] --> [Discovery Server] : Service Discovery
+[Gateway] --> [User Context Service] : Routes Requests
+[Gateway] --> [Auth Service Java] : Routes Requests
+[User Context Service] --> [Configuration Server] : Fetch Config
+[User Context Service] --> [Discovery Server] : Register/Discover
+[Auth Service Java] --> [Configuration Server] : Fetch Config
+[Auth Service Java] --> [Discovery Server] : Register/Discover
+
+[User Context Service] --> [OpenTelemetry Collector] : Send Telemetry
+[Auth Service Java] --> [OpenTelemetry Collector] : Send Telemetry
+[Gateway] --> [OpenTelemetry Collector] : Send Telemetry
+[Configuration Server] --> [OpenTelemetry Collector] : Send Telemetry
+[Discovery Server] --> [OpenTelemetry Collector] : Send Telemetry
+
+[OpenTelemetry Collector] --> [Tempo] : Traces
+[OpenTelemetry Collector] --> [Loki] : Logs
+[OpenTelemetry Collector] --> [Prometheus] : Metrics
+
+[Grafana] --> [Prometheus] : Query Metrics
+[Grafana] --> [Tempo] : Query Traces
+[Grafana] --> [Loki] : Query Logs
+
+[Alloy] --> [Grafana] : Visualize Data
+[Alloy] --> [Prometheus] : Analyze Metrics
+[Alloy] --> [Tempo] : Analyze Traces
+
+[Docker Compose] ..> [Context Services] : Orchestrate
+[Docker Compose] ..> [Observability Stack] : Orchestrate
+[Docker Compose] ..> [Infrastructure] : Orchestrate
+[Docker Compose] ..> [Databases] : Orchestrate
+
+@enduml

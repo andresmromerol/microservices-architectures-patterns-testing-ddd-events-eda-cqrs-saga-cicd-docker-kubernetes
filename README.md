@@ -3,12 +3,22 @@
 # 🔷  Project view
 <div align="center">
 <img src="./diagrams/11-feat-user-multiple-roles-infrastructure.gif" alt="Architecture Diagram" style="max-width: 800px; max-height: 450px; width: 100%; height: auto;">
+<img src="./diagrams/11-event-subscriber-feat-user-multiple-roles-infrastructure.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 400px; width: 100%; height: auto;">
 </div>
 
 # 🔷 Branches
 
 
 ##  🌵 11-Event-subscriber-feat/user-multiple-roles-infrastructure
+
+<div align="center">
+
+### [View event-subscriber-feat-user-multiple-roles-infrastructure](./uml/11-event-subscriber-feat-user-multiple-roles-infrastructure.puml)
+
+<img src="./diagrams/11-event-subscriber-feat-user-multiple-roles-infrastructure.png" alt="Architecture Diagram" style="max-width: 800px; max-height: 500px; width: 100%; height: auto;">
+<br>
+<br>
+</div>
 
 <div align="left">
 
