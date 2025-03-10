@@ -1,6 +1,8 @@
 package com.amr.shop.athj.auth_service_java.user.domain;
 
 import com.amr.shop.cmmj.common_java_context.services.auth.RoleEnum;
+import com.amr.shop.cmmj.common_java_context.services.auth.event.AdministratorRegisteredEvent;
+import com.amr.shop.cmmj.common_java_context.services.auth.event.CustomerRegisteredEvent;
 import com.amr.shop.cmmj.common_java_context.services.user.UserStatusEnum;
 import com.amr.shop.cmmj.common_java_context.services.user.id.UserId;
 import com.amr.shop.cmmj.common_java_context.services.user.vo.*;
@@ -16,6 +18,7 @@ public class UserAuthModel extends AggregateRoot<UserId> {
   private final UserStatus status;
   private final PhoneVo phone;
   private final Set<RoleEnum> roles;
+  private Set<AuthUserExtraInformation> extraInformation;
 
   public UserAuthModel(
       UserId authId,
@@ -35,6 +38,47 @@ public class UserAuthModel extends AggregateRoot<UserId> {
   }
 
   public static UserAuthModel create(
+      UUID id,
+      String name,
+      String email,
+      String password,
+      UserStatusEnum status,
+      String phone,
+      Set<RoleEnum> roles,
+      Set<AuthUserExtraInformation> extraInformation) {
+
+    UserAuthModel user =
+        new UserAuthModel(
+            new UserId(id),
+            new NameVo(name),
+            new EmailVo(email),
+            new PasswordVo(password),
+            new UserStatus(status),
+            new PhoneVo(phone),
+            roles);
+
+    if (extraInformation != null && !extraInformation.isEmpty()) {
+      for (AuthUserExtraInformation information : extraInformation) {
+        if (information.getRole().equals(RoleEnum.ADMIN)) {
+          user.record(
+              new AdministratorRegisteredEvent(
+                  id.toString(),
+                  name,
+                  email,
+                  information.getAdministratorExtra().getCreatedByAdminId().toString(),
+                  phone));
+        }
+        if (information.getRole().equals(RoleEnum.CUSTOMER)) {
+          user.record(
+              new CustomerRegisteredEvent(
+                  id.toString(), name, email, information.getCustomerExtra().getAddress(), phone));
+        }
+      }
+    }
+    return user;
+  }
+
+  public static UserAuthModel update(
       UUID id,
       String name,
       String email,

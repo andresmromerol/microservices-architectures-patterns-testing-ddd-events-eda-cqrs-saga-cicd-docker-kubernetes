@@ -152,7 +152,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"andres\",\r\n    \"email\": \"andres@gmail.com\",\r\n    \"password\": \"123456789\",\r\n    \"phone\": \"3209118911\",\r\n    \"role\": [\r\n        \"5c2ced8b-28f9-4476-aa83-4f418088ea8d\",\r\n        \"0f3fa24f-0f9b-4ae1-a79a-387be78a3ceb\"\r\n    ]\r\n}",
+							"raw": "{\r\n    \"name\": \"andres\",\r\n    \"email\": \"andresxx7@gmail.com\",\r\n    \"password\": \"123456789\",\r\n    \"phone\": \"3209118911\",\r\n    \"role\": [\r\n        \"0f3fa24f-0f9b-4ae1-a79a-387be78a3ceb\",\r\n        \"02fb606f-3242-488b-a7a2-d20f6e8af7e4\"\r\n    ],\r\n    \"createdByAdminId\": \"0f3fa24f-0f9b-4ae1-a79a-387be78a3ceb\",\r\n    \"address\": \"lorem lorem lorem\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

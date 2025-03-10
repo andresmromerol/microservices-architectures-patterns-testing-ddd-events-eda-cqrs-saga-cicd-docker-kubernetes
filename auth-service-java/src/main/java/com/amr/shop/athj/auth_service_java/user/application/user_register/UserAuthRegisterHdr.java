@@ -21,6 +21,8 @@ public class UserAuthRegisterHdr implements ICommandHandler<UserAuthRegisterCmd>
         command.email(),
         command.password(),
         command.phone(),
-        command.roles());
+        command.roles(),
+        command.createdByAdminId(),
+        command.address());
   }
 }

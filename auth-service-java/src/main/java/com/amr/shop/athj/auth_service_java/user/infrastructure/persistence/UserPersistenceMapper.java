@@ -2,6 +2,7 @@ package com.amr.shop.athj.auth_service_java.user.infrastructure.persistence;
 
 import com.amr.shop.athj.auth_service_java.shared.infrastructure.jpa.user.UserJpa;
 import com.amr.shop.athj.auth_service_java.user.domain.UserAuthModel;
+import java.util.Set;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,6 +28,7 @@ public class UserPersistenceMapper {
         userJpa.getPassword(),
         userJpa.getStatus(),
         userJpa.getPhone(),
-        userJpa.getRoles());
+        userJpa.getRoles(),
+        Set.of());
   }
 }

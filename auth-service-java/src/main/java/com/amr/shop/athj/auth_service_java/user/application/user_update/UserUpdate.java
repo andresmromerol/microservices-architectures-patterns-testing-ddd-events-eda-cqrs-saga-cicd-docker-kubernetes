@@ -29,7 +29,7 @@ public class UserUpdate {
       Set<RoleEnum> roles,
       UserStatusEnum status) {
     log.info("Starting user update for user with id: {}", id);
-    UserAuthModel user = UserAuthModel.create(id, name, email, password, status, phone, roles);
+    UserAuthModel user = UserAuthModel.update(id, name, email, password, status, phone, roles);
     userUpdatePort.update(user);
     log.info("User updated successfully with id: {}", id);
   }

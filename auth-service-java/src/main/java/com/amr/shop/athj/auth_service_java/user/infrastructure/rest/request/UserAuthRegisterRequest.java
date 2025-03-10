@@ -2,10 +2,7 @@ package com.amr.shop.athj.auth_service_java.user.infrastructure.rest.request;
 
 import com.amr.shop.cmmj.common_java_context.services.auth.RoleEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -37,6 +34,12 @@ public class UserAuthRegisterRequest {
 
   @JsonProperty("role")
   private Set<UUID> roleUuids = new HashSet<>();
+
+  @Size(min = 36, max = 36, message = "createdByAdminId must be a valid UUID")
+  private String createdByAdminId;
+
+  @Size(min = 10, max = 200, message = "address must have between 10 and 200 characters")
+  private String address;
 
   public Set<RoleEnum> getRoles() {
     return RoleEnum.fromUUIDs(roleUuids);

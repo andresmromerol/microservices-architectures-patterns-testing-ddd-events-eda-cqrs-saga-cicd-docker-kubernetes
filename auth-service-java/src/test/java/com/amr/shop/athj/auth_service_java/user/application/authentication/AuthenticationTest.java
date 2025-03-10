@@ -12,7 +12,7 @@ import com.amr.shop.athj.auth_service_java.token.application.token_refresh.Token
 import com.amr.shop.athj.auth_service_java.token.application.token_refresh.TokenRefreshRes;
 import com.amr.shop.athj.auth_service_java.token.application.token_revoke.TokenRevokeCmd;
 import com.amr.shop.athj.auth_service_java.token.application.token_save.TokenSaveCmd;
-import com.amr.shop.athj.auth_service_java.user.domain.UserAuthUserNotFoundException;
+import com.amr.shop.athj.auth_service_java.user.domain.exception.UserAuthUserNotFoundException;
 import com.amr.shop.athj.auth_service_java.user.domain.ports.IAuthenticationPort;
 import com.amr.shop.athj.auth_service_java.user_vw.application.user_search_by_email.UserSearchByEmailQry;
 import com.amr.shop.athj.auth_service_java.user_vw.application.user_search_by_email.UserSearchByEmailRes;

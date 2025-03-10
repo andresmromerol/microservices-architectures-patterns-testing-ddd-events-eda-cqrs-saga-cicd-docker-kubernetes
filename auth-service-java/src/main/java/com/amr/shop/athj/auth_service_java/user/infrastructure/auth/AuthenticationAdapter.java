@@ -1,6 +1,6 @@
 package com.amr.shop.athj.auth_service_java.user.infrastructure.auth;
 
-import com.amr.shop.athj.auth_service_java.user.domain.UserAuthAuthenticationFailedException;
+import com.amr.shop.athj.auth_service_java.user.domain.exception.UserAuthAuthenticationFailedException;
 import com.amr.shop.athj.auth_service_java.user.domain.ports.IAuthenticationPort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

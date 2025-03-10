@@ -3,7 +3,7 @@ package com.amr.shop.athj.auth_service_java.user.infrastructure.persistence;
 import com.amr.shop.athj.auth_service_java.shared.infrastructure.jpa.user.UserJpa;
 import com.amr.shop.athj.auth_service_java.shared.infrastructure.jpa.user.UserJpaRepository;
 import com.amr.shop.athj.auth_service_java.user.domain.UserAuthModel;
-import com.amr.shop.athj.auth_service_java.user.domain.UserAuthUserNotFoundException;
+import com.amr.shop.athj.auth_service_java.user.domain.exception.UserAuthUserNotFoundException;
 import com.amr.shop.athj.auth_service_java.user.domain.ports.IUserAuthPersistencePort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

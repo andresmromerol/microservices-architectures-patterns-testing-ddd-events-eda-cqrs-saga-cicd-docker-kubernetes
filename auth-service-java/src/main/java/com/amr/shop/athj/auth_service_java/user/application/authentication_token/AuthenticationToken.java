@@ -1,6 +1,6 @@
 package com.amr.shop.athj.auth_service_java.user.application.authentication_token;
 
-import com.amr.shop.athj.auth_service_java.user.domain.UserAuthAuthenticationFailedException;
+import com.amr.shop.athj.auth_service_java.user.domain.exception.UserAuthAuthenticationFailedException;
 import com.amr.shop.athj.auth_service_java.user.domain.ports.IAuthenticationPort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

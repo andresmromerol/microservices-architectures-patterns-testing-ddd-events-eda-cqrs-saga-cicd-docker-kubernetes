@@ -3,9 +3,9 @@ package com.amr.shop.athj.auth_service_java.user.application.validate_token;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.amr.shop.athj.auth_service_java.user.domain.UserAuthException;
-import com.amr.shop.athj.auth_service_java.user.domain.UserAuthTokenExpiredException;
-import com.amr.shop.athj.auth_service_java.user.domain.UserAuthUserNotFoundException;
+import com.amr.shop.athj.auth_service_java.user.domain.exception.UserAuthException;
+import com.amr.shop.athj.auth_service_java.user.domain.exception.UserAuthTokenExpiredException;
+import com.amr.shop.athj.auth_service_java.user.domain.exception.UserAuthUserNotFoundException;
 import com.amr.shop.athj.auth_service_java.user.domain.ports.IClaimPort;
 import com.amr.shop.athj.auth_service_java.user_vw.application.user_search_by_email.UserSearchByEmailQry;
 import com.amr.shop.athj.auth_service_java.user_vw.application.user_search_by_email.UserSearchByEmailRes;

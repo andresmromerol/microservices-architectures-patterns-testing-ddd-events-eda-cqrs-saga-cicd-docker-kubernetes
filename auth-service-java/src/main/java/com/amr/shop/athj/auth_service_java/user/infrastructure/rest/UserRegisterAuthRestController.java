@@ -33,7 +33,9 @@ public class UserRegisterAuthRestController extends ApiController {
             request.getEmail(),
             request.getPassword(),
             request.getPhone(),
-            request.getRoles()));
+            request.getRoles(),
+            UUID.fromString(request.getCreatedByAdminId()),
+            request.getAddress()));
     log.info("User registered successfully with id: {}", id);
     return ResponseEntity.ok().build();
   }

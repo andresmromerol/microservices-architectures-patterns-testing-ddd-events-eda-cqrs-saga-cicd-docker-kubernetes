@@ -26,6 +26,15 @@ public enum RoleEnum {
         PermissionEnum.MANAGER_UPDATE,
         PermissionEnum.MANAGER_DELETE,
         PermissionEnum.MANAGER_CREATE
+      }),
+  CUSTOMER(
+      UUID.fromString("02fb606f-3242-488b-a7a2-d20f6e8af7e4"),
+      "CUSTOMER",
+      new PermissionEnum[] {
+        PermissionEnum.MANAGER_READ,
+        PermissionEnum.MANAGER_UPDATE,
+        PermissionEnum.MANAGER_DELETE,
+        PermissionEnum.MANAGER_CREATE
       });
 
   private final UUID id;

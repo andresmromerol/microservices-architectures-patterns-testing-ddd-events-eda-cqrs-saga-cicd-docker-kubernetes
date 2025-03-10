@@ -5,7 +5,7 @@ import static com.amr.shop.athj.auth_service_java.shared.infrastructure.exceptio
 import com.amr.shop.athj.auth_service_java.token.domain.TokenRevocationFailedException;
 import com.amr.shop.athj.auth_service_java.token.domain.TokenSaveFailedException;
 import com.amr.shop.athj.auth_service_java.token.domain.ValidTokenNotFoundException;
-import com.amr.shop.athj.auth_service_java.user.domain.*;
+import com.amr.shop.athj.auth_service_java.user.domain.exception.*;
 import com.amr.shop.cmmj.common_java_context.shared.exception.DomainException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

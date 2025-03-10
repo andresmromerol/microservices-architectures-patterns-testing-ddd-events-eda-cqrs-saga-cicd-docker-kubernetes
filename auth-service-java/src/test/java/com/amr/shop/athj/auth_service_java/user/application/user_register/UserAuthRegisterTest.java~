@@ -40,7 +40,7 @@ class UserAuthRegisterTest {
   private final String userPhone = "3209118911";
   private final Set<RoleEnum> userRoles = new HashSet<>(Set.of(RoleEnum.USER));
   private final UUID createdByAdminId = UUID.randomUUID();
-  private final String address = "address";
+  private final String address = "Calle 60";
 
   @BeforeEach
   void setUp() {

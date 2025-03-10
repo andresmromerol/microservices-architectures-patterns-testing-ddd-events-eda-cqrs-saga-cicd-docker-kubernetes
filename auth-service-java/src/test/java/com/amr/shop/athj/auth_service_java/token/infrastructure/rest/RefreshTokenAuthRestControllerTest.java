@@ -9,8 +9,8 @@ import com.amr.shop.athj.auth_service_java.shared.infrastructure.exception.AuthE
 import com.amr.shop.athj.auth_service_java.user.application.authentication.AuthenticatorQry;
 import com.amr.shop.athj.auth_service_java.user.application.authentication.AuthenticatorRes;
 import com.amr.shop.athj.auth_service_java.user.application.validate_token.ValidateTokenCmd;
-import com.amr.shop.athj.auth_service_java.user.domain.UserAuthException;
-import com.amr.shop.athj.auth_service_java.user.domain.UserAuthTokenExpiredException;
+import com.amr.shop.athj.auth_service_java.user.domain.exception.UserAuthException;
+import com.amr.shop.athj.auth_service_java.user.domain.exception.UserAuthTokenExpiredException;
 import com.amr.shop.athj.auth_service_java.user.domain.ports.IClaimPort;
 import com.amr.shop.cmmj.common_java_context.services.auth.AuthTitleEnum;
 import com.amr.shop.cmmj.common_java_context.shared.bus.command.ICommandBus;
