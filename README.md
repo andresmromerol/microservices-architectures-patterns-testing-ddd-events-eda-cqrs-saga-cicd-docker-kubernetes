@@ -7,7 +7,21 @@
 
 # 🔷 Branches
 
-##  🌵 10-feat/user-auth-register-domain-events-RabbitMQ
+
+##  🌵 11-Event-subscriber-feat/user-multiple-roles-infrastructure
+
+<div align="left">
+
+⚡️Subscribe to AdministratorRegisteredEvent to create an admin user.<br>
+⚡️Subscribe to CustomerRegisteredEvent to create a customer user.<br>
+⚡️Modify IUserPersistencePort.findByEmailAndRole.<br>
+⚡️Update infrastructure class UserJpa.<br>
+⚡️Add UserUnknownRoleException.<br>
+</div>
+
+
+
+##  🌵 10-Event-Driven-Architecture-feat/user-auth-register-domain-events-RabbitMQ
 
 <div align="center">
 
@@ -44,7 +58,7 @@
 </div>
 
 
-##  🌵 9-feat/add-create-administrator-customer-user
+##  🌵 9-DDD-factory-visitor-nullObject-feat/add-create-administrator-customer-user
 
 <div align="center">
 
@@ -75,9 +89,7 @@
 </div>
 
 
-
-
-##  🌵 8-feat/gateway-authorization-routes-and-header-config
+##  🌵 8-security-feat/gateway-authorization-routes-and-header-config
 
 <div align="center">
 
@@ -166,7 +178,7 @@
 ⚡️Create endpoint: PUT athj_change_password.<br>
 </div>
 
-##  🌵 4-feat/add-user-authentication-endpoint
+##  🌵 4-JWT-Security-feat/add-user-authentication-auth
 
 <div align="center">
 
@@ -195,7 +207,7 @@
 
 </div>
 
-##  🌵 3-feat/add-user-registration-auth
+##  🌵 3-CQRS-simplified-feat/add-user-registration-auth
 
 <div align="center">
 
@@ -222,7 +234,7 @@
 ⚡️create PUT endpoint athj_user_register in postman_collection.<br>
 </div>
 
-##  🌵 2-feat/initialize-auth-service-java
+##  🌵 2-onion-architecture-feat/initialize-auth-service-java
 <div align="center">
 
 ### [View microservices-component-diagram](./uml/1-microservices-component-diagram.puml)
